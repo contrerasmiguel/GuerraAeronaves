@@ -1,5 +1,6 @@
 package guerra.aeronaves.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import guerra.aeronaves.guerraAeronaves;
@@ -12,6 +13,7 @@ public class DesktopLauncher {
                 config.height = guerra.aeronaves.guerraAeronaves.alturaPantalla;
                 config.width = guerra.aeronaves.guerraAeronaves.anchuraPantalla;
                 config.resizable = false;
+                config.addIcon("icon.png", Files.FileType.Internal);
 		new LwjglApplication(new guerraAeronaves(), config);
 	}
 }

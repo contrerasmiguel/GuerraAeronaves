@@ -2,6 +2,7 @@ package guerra.aeronaves.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import guerra.aeronaves.guerraAeronaves;
@@ -14,6 +15,8 @@ public class ScreenMenuPrincipal implements Screen{
     Texture btn_jugar;
     Texture btn_editar;
     
+    Sound beep;
+    
     public ScreenMenuPrincipal(guerraAeronaves game) {
         this.game = game;
         
@@ -21,6 +24,7 @@ public class ScreenMenuPrincipal implements Screen{
         btn_jugar = new Texture(Gdx.files.internal("boton_jugar.png"));
         btn_editar = new Texture(Gdx.files.internal("boton_editar_mapa.png"));
         
+        beep = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_select.wav"));
     }
 
     @Override
@@ -42,6 +46,7 @@ public class ScreenMenuPrincipal implements Screen{
             //System.out.println("¡Estas sobre el boton Jugar!");
             game.batch.draw(btn_jugar, ((game.anchuraPantalla/2) - (game.btnAnchura/2)), 222);
             if(Gdx.input.isTouched()) {
+                beep.play(0.2f);
                 game.setScreenJuego();
             }         
         }
@@ -51,6 +56,7 @@ public class ScreenMenuPrincipal implements Screen{
             //System.out.println("¡Estas sobre el boton Editar!");
             game.batch.draw(btn_editar, ((game.anchuraPantalla/2) - (game.btnAnchura/2)), 82);
             if(Gdx.input.isTouched()) {
+                beep.play(0.2f);
                 game.setScreenMenuEditar();
             }         
         }
@@ -74,6 +80,7 @@ public class ScreenMenuPrincipal implements Screen{
     @Override
     public void dispose() {
         game.batch.dispose();
+        beep.dispose();
     }
     
 }

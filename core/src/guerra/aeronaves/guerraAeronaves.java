@@ -25,9 +25,9 @@ public class guerraAeronaves extends Game {
 	public void create () {
             batch = new SpriteBatch();
             
-            music_menu = Gdx.audio.newMusic(Gdx.files.internal("musica_menu.mp3"));
-            music_edicion = Gdx.audio.newMusic(Gdx.files.internal("musica_edicion.mp3"));
-            music_juego = Gdx.audio.newMusic(Gdx.files.internal("musica_juego.mp3"));
+            music_menu = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_menu.mp3"));
+            music_edicion = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_edicion.mp3"));
+            music_juego = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_juego.mp3"));
             
             setScreenMenuPrincipal();
 	}
