@@ -24,13 +24,13 @@ public class ScreenEditor implements Screen{
     
     public ScreenEditor(guerraAeronaves game) {
         this.game = game;
-        skin = new Skin();
+        skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         cam = new OrthographicCamera();
         viewport = new ScreenViewport(cam);
         resize(game.anchuraPantalla + (game.tamañoCasilla*2),game.alturaPantalla);
         pantalla = new Grid();
         
-        //Aqui debe haber un llamado a un manejador de archivos o algo
+        //Comienzo del FileChooser
         FileChooser dialog = FileChooser.createPickDialog("Add track", skin, Gdx.files.internal("mapas/"));
                 dialog.setResultListener(new ResultListener() {
                     @Override
@@ -50,8 +50,9 @@ public class ScreenEditor implements Screen{
                         return path.matches(".*(?:ogg|mp3|wav)");
                     }
                 });
+                //¡¡¡¡ESTO DA ERROR!!!!!!!!!!!!!!!!!!!!!
                 //dialog.show(stage);
-        
+        //Final del FileChooser
     }
     
     @Override
