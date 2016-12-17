@@ -5,8 +5,12 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.*;
 import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.*;
 import guerra.aeronaves.*;
+import guerra.aeronaves.FileChooser.ResultListener;
+import java.io.File;
+import java.io.FileFilter;
 
 public class ScreenEditor implements Screen{
     
@@ -14,20 +18,39 @@ public class ScreenEditor implements Screen{
     private ScreenViewport viewport;
     private Camera cam;
     
-    private Music music;
-    
-    private FileHandle fl;
+    Skin skin;
     
     guerraAeronaves game;
     
     public ScreenEditor(guerraAeronaves game) {
         this.game = game;
+        skin = new Skin();
         cam = new OrthographicCamera();
         viewport = new ScreenViewport(cam);
         resize(game.anchuraPantalla + (game.tamañoCasilla*2),game.alturaPantalla);
         pantalla = new Grid();
         
         //Aqui debe haber un llamado a un manejador de archivos o algo
+        FileChooser dialog = FileChooser.createPickDialog("Add track", skin, Gdx.files.internal("mapas/"));
+                dialog.setResultListener(new ResultListener() {
+                    @Override
+                    public boolean result(boolean success, FileHandle result) {
+                        if(success){
+                            // do stuff with result
+                        }
+                        return true;
+                    }
+                });
+                dialog.disableDirectoryBrowsing();
+                dialog.setOkButtonText("Add");
+                dialog.setFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(File pathname) {
+                        String path = pathname.getPath();
+                        return path.matches(".*(?:ogg|mp3|wav)");
+                    }
+                });
+                //dialog.show(stage);
         
     }
     
