@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.utils.viewport.*;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import guerra.aeronaves.*;
 
 public class ScreenEditorNuevo implements Screen{
     
     private Grid pantalla;
-    private ScreenViewport viewport;
-    private Camera cam;
+    private Grid paleta;
+    
+    private OrthographicCamera cam;
     
     private Music music;
     
@@ -19,10 +20,12 @@ public class ScreenEditorNuevo implements Screen{
     
     public ScreenEditorNuevo(guerraAeronaves game) {
         this.game = game;
-        cam = new OrthographicCamera();
-        viewport = new ScreenViewport(cam);
-        resize(game.anchuraPantalla + (game.tamañoCasilla*2),game.alturaPantalla);
+        cam = new OrthographicCamera(game.anchuraPantalla, game.anchuraPantalla);
+        cam.setToOrtho(true, game.anchuraPantalla, game.alturaPantalla);
+        cam.update();
         pantalla = new Grid();
+        paleta = new Grid();
+        paleta.cambiarPaleta();
     }
     
     @Override
@@ -42,16 +45,20 @@ public class ScreenEditorNuevo implements Screen{
             }
         }
         
-        //System.out.println("X="+Gdx.input.getX()+", Y= "+Gdx.input.getY());
+        //PALETA
+        for(int i=0;i<3;i++) {
+            for(int j=0;j<2;j++) {
+                game.batch.draw(paleta.getCasilla(i, j).getTexture(), j * game.tamañoCasilla, i * game.tamañoCasilla);
+            }
+        }
+        
+        System.out.println("X="+Gdx.input.getX()+", Y= "+Gdx.input.getY());
             
         game.batch.end();
     }
 
     @Override
-    public void resize(int i, int i1) {
-        Gdx.graphics.setWindowedMode(i, i1);
-        viewport.update(game.anchuraPantalla, game.alturaPantalla);
-    }
+    public void resize(int i, int i1) {}
 
     @Override
     public void pause() {}

@@ -21,7 +21,7 @@ public class Casilla {
     public void setY(int y) {
         posY = y;
     }
-    public void setId(Texture t) {
+    public void setImg(Texture t) {
         img = t;
     }
     public int getId() {
