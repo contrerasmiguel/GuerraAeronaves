@@ -18,6 +18,7 @@ public class guerraAeronaves extends Game {
         public static final int btnAltura = 82;
         public static final int btnAnchura = 284;
         public static final int tamañoCasilla = 46;
+        public static final int tamañoCasillaEditor = 32;
         public static final int casillasH = 19;
         public static final int casillasV = 14;
 	
