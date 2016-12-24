@@ -20,9 +20,9 @@ public class ScreenEditor implements Screen{
     
     Skin skin;
     
-    guerraAeronaves game;
+    GuerraAeronaves game;
     
-    public ScreenEditor(guerraAeronaves game) {
+    public ScreenEditor(GuerraAeronaves game) {
         this.game = game;
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
         cam = new OrthographicCamera();

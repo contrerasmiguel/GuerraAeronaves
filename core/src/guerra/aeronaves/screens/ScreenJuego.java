@@ -14,9 +14,9 @@ public class ScreenJuego implements Screen{
     
     private String filePath;
     
-    guerraAeronaves game;
+    GuerraAeronaves game;
     
-    public ScreenJuego(guerraAeronaves game) {
+    public ScreenJuego(GuerraAeronaves game) {
         this.game = game;
         pantalla = new Grid();
         filePath = "";

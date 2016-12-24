@@ -16,9 +16,9 @@ public class ScreenEditorNuevo implements Screen{
     
     private Music music;
     
-    guerraAeronaves game;
+    GuerraAeronaves game;
     
-    public ScreenEditorNuevo(guerraAeronaves game) {
+    public ScreenEditorNuevo(GuerraAeronaves game) {
         this.game = game;
         cam = new OrthographicCamera(game.anchuraPantalla, game.anchuraPantalla);
         cam.setToOrtho(true, game.anchuraPantalla, game.alturaPantalla);
