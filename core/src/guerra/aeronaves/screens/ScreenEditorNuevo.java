@@ -2,7 +2,9 @@ package guerra.aeronaves.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import guerra.aeronaves.GuerraAeronaves;
 
@@ -18,11 +20,12 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         Table tablaPaleta = new Table();
         
         // Código de prueba para agregar elementos a la tabla de la paleta
-        tablaPaleta.setDebug(true);
+        tablaPaleta.setDebug(true); // Líneas de la grilla
         for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS_PALETA; ++filas) {
             tablaPaleta.row();
             for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS_PALETA; ++columnas) {
-                tablaPaleta.add().size(GuerraAeronaves.tamañoCasilla);
+                tablaPaleta.add(new Image(new Texture("avion_rojo.png")))
+                        .size(GuerraAeronaves.tamañoCasilla);
             }
         }
         // Fin de código de prueba
@@ -30,11 +33,12 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         Table tablaMapa = new Table();
         
         // Código de prueba para agregar elementos a la tabla del mapa
-        tablaMapa.setDebug(true);
+        tablaMapa.setDebug(true); // Líneas de la grilla
         for (int filas = 0; filas < GuerraAeronaves.casillasV; ++filas) {
             tablaMapa.row();
             for (int columnas = 0; columnas < GuerraAeronaves.casillasH; ++columnas) {
-                tablaMapa.add().size(GuerraAeronaves.tamañoCasilla);
+                tablaMapa.add(new Image(new Texture("avion_azul.png")))
+                        .size(GuerraAeronaves.tamañoCasilla);
             }
         }
         // Fin de código de prueba
