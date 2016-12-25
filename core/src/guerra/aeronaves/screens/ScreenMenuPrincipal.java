@@ -15,11 +15,5 @@ public class ScreenMenuPrincipal extends ScreenMenu {
         btnEditarMapa.addListener(new ClickListenerBotonEditarMapa(
                 guerraAeronaves));
     }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        stage.dispose();
-    }
     
 }

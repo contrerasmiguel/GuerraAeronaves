@@ -43,6 +43,12 @@ public abstract class ScreenMenu extends ScreenAdapter {
         ib.setZIndex(1);
         stage.addActor(ib);
         return ib;
-    }    
-    
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        stage.dispose();
+    }
+
 }
