@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ScreenEditorNuevo extends ScreenAdapter {
@@ -19,16 +20,53 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         
         Table tablaPaleta = new Table();
         
-        // Código de prueba para agregar elementos a la tabla de la paleta
-        tablaPaleta.setDebug(true); // Líneas de la grilla
+        /*
         for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS_PALETA; ++filas) {
             tablaPaleta.row();
             for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS_PALETA; ++columnas) {
-                tablaPaleta.add(new Image(new Texture("avion_rojo.png")))
-                        .size(GuerraAeronaves.tamañoCasilla);
+                tablaPaleta.add(new Image(new Texture("paleta/vaciod.png"))).size(GuerraAeronaves.tamañoCasilla);
             }
         }
-        // Fin de código de prueba
+        */
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/vaciod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/nubed.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/avion_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/avion_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/edificiod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/montanad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/est_gasolina_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/est_gasolina_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/est_municion_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/est_municion_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/pickup_gasolinad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/pickup_vidad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/pickup_municiond.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/powerup_vidad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/btn_guardar.png"))).colspan(2);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("paleta/btn_limpiar.png"))).colspan(2);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         
         Table tablaMapa = new Table();
         
@@ -37,8 +75,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         for (int filas = 0; filas < GuerraAeronaves.casillasV; ++filas) {
             tablaMapa.row();
             for (int columnas = 0; columnas < GuerraAeronaves.casillasH; ++columnas) {
-                tablaMapa.add(new Image(new Texture("avion_azul.png")))
-                        .size(GuerraAeronaves.tamañoCasilla);
+                tablaMapa.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
             }
         }
         // Fin de código de prueba
