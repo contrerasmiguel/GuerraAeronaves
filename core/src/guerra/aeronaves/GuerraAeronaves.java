@@ -57,7 +57,7 @@ public class GuerraAeronaves extends Game {
         setMusica(music_menu);
     }
     public void setScreenEditor() {
-        setScreen(new ScreenEditor(this));
+        setScreen(new ScreenExploradorArchivos(this));
         setMusica(music_edicion);
     }
     public void setScreenEditorNuevo() {
