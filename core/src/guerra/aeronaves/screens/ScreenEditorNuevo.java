@@ -16,12 +16,33 @@ public class ScreenEditorNuevo extends ScreenAdapter {
             , GuerraAeronaves.getAltoVentanaEditor());   
         
         Table tablaPaleta = new Table();
+        
+        // Código de prueba para agregar elementos a la tabla de la paleta
+        tablaPaleta.setDebug(true);
+        for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS_PALETA; ++filas) {
+            tablaPaleta.row();
+            for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS_PALETA; ++columnas) {
+                tablaPaleta.add().size(GuerraAeronaves.tamañoCasilla);
+            }
+        }
+        // Fin de código de prueba
+        
         Table tablaMapa = new Table();
+        
+        // Código de prueba para agregar elementos a la tabla del mapa
+        tablaMapa.setDebug(true);
+        for (int filas = 0; filas < GuerraAeronaves.casillasV; ++filas) {
+            tablaMapa.row();
+            for (int columnas = 0; columnas < GuerraAeronaves.casillasH; ++columnas) {
+                tablaMapa.add().size(GuerraAeronaves.tamañoCasilla);
+            }
+        }
+        // Fin de código de prueba
         
         Table tablaContenedora = new Table();
         tablaContenedora.setSize(GuerraAeronaves.getNumColumnasEditor() 
                 * GuerraAeronaves.tamañoCasilla
-                , GuerraAeronaves.getNumFilasEditor()
+                , GuerraAeronaves.getNumFilasEditor() 
                 * GuerraAeronaves.tamañoCasilla);
         tablaContenedora.add(tablaPaleta).size(
                   GuerraAeronaves.NUM_COLUMNAS_PALETA * GuerraAeronaves.tamañoCasilla
