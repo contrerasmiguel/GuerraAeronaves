@@ -1,82 +1,57 @@
 package guerra.aeronaves.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import guerra.aeronaves.*;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import guerra.aeronaves.GuerraAeronaves;
 
-public class ScreenEditorNuevo implements Screen{
-    
-    private Grid pantalla;
-    
-    private OrthographicCamera cam;
-    
-    private Music music;
-    
-    GuerraAeronaves game;
-    
-    private ShapeRenderer render;
-    private mapGrid grid;
-    
-    private jugador rojo;
-    
-    public ScreenEditorNuevo(GuerraAeronaves game) {
-        this.game = game;
-        cam = new OrthographicCamera(game.anchuraPantalla, game.anchuraPantalla);
-        cam.setToOrtho(true, game.anchuraPantalla, game.alturaPantalla);
-        cam.update();
-        pantalla = new Grid();
-        
-        render = new ShapeRenderer();
-        render.setAutoShapeType(true);
-        grid = new mapGrid(20,15);
- 
-    }
-    
-    @Override
-    public void show() {
-    }
+public class ScreenEditorNuevo extends ScreenAdapter {
 
+    private final Stage stage;
+    
+    public ScreenEditorNuevo(GuerraAeronaves guerraAeronaves) {
+        
+        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentanaEditor()
+            , GuerraAeronaves.getAltoVentanaEditor());   
+        
+        Table tablaPaleta = new Table();
+        Table tablaMapa = new Table();
+        
+        Table tablaContenedora = new Table();
+        tablaContenedora.setSize(GuerraAeronaves.getNumColumnasEditor() 
+                * GuerraAeronaves.tamañoCasilla
+                , GuerraAeronaves.getNumFilasEditor()
+                * GuerraAeronaves.tamañoCasilla);
+        tablaContenedora.add(tablaPaleta).size(
+                  GuerraAeronaves.NUM_COLUMNAS_PALETA * GuerraAeronaves.tamañoCasilla
+                , GuerraAeronaves.NUM_FILAS_PALETA * GuerraAeronaves.tamañoCasilla);
+        tablaContenedora.add(tablaMapa).size(
+                  GuerraAeronaves.casillasH * GuerraAeronaves.tamañoCasilla
+                , GuerraAeronaves.casillasV * GuerraAeronaves.tamañoCasilla);
+        
+        stage = new Stage();
+        stage.addActor(tablaContenedora);
+        Gdx.input.setInputProcessor(stage);
+    }
+   
     @Override
-    public void render(float f) {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            
-        game.batch.begin();
-            
-        for(int i=0;i<14;i++) {
-            for(int j=0;j<19;j++) {
-                game.batch.draw(pantalla.getCasilla(i, j).getTexture(), j * game.tamañoCasilla, i * game.tamañoCasilla);
-            }
-        }
-        
-        //System.out.println("X="+Gdx.input.getX()+", Y= "+Gdx.input.getY());
-            
-        game.batch.end();
-        
-        render.begin();
-        grid.render(render);
-        render.end();
+    public void hide() {
+        super.hide();
+        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentana()
+                , GuerraAeronaves.getAltoVentana());          
     }
 
     @Override
-    public void resize(int i, int i1) {}
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
+    public void render(float delta) {
+        super.render(delta);
+        stage.act(delta);
+        stage.draw();
+    }
 
     @Override
     public void dispose() {
-        game.batch.dispose();
+        super.dispose();
     }
     
 }

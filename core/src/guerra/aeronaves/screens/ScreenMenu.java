@@ -38,7 +38,7 @@ public abstract class ScreenMenu extends ScreenAdapter {
                 new Texture(Gdx
                 .files.internal(rutaTextura)))));
         ib.setSize(GuerraAeronaves.btnAnchura, GuerraAeronaves.btnAltura);
-        ib.setX(GuerraAeronaves.anchuraPantalla/2 - GuerraAeronaves
+        ib.setX(GuerraAeronaves.getAnchoVentana()/2 - GuerraAeronaves
                 .btnAnchura/2);
         ib.setZIndex(1);
         stage.addActor(ib);
