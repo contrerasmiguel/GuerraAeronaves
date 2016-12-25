@@ -60,8 +60,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("paleta/btn_guardar.png"))).colspan(2);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("paleta/btn_girar.png"))).colspan(2);
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("paleta/btn_limpiar.png"))).colspan(2);
         tablaPaleta.row();
