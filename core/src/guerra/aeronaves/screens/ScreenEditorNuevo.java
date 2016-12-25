@@ -3,10 +3,13 @@ package guerra.aeronaves.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ScreenEditorNuevo extends ScreenAdapter {
@@ -19,15 +22,8 @@ public class ScreenEditorNuevo extends ScreenAdapter {
             , GuerraAeronaves.getAltoVentanaEditor());   
         
         Table tablaPaleta = new Table();
+        tablaPaleta.setTouchable(Touchable.enabled);
         
-        /*
-        for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS_PALETA; ++filas) {
-            tablaPaleta.row();
-            for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS_PALETA; ++columnas) {
-                tablaPaleta.add(new Image(new Texture("paleta/vaciod.png"))).size(GuerraAeronaves.tamañoCasilla);
-            }
-        }
-        */
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
@@ -66,6 +62,15 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        
+        tablaPaleta.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                
+            System.out.println("I got clicked in X: "+x+", Y: "+y);
+            
+            }
+        });
         
         Table tablaMapa = new Table();
         
