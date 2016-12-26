@@ -38,5 +38,4 @@ public class Avion extends Elemento {
     public void setMunicion(int municion) {
         this.municion = municion;
     }
-    
 }

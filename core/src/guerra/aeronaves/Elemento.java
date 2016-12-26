@@ -1,5 +1,6 @@
 package guerra.aeronaves;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import java.awt.Point;
 
 abstract public class Elemento {
@@ -7,6 +8,7 @@ abstract public class Elemento {
     protected Point posicion;
     protected boolean visible;
     protected int vida;
+    private Image img;
 
     public Point getPosicion() {
         return posicion;
@@ -30,6 +32,14 @@ abstract public class Elemento {
 
     public void setVida(int vida) {
         this.vida = vida;
+    }
+    
+    public Image getImg() {
+        return img;
+    }
+    
+    public void setImg(Image i) {
+        img = i;
     }
     
 }

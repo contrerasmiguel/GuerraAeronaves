@@ -3,6 +3,7 @@ package guerra.aeronaves.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -16,6 +17,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
 
     private final Stage stage;
     private ClickListenerBotonPaleta clbp;
+    private Actor ultimoClickeado;
     
     public ScreenEditorNuevo(GuerraAeronaves guerraAeronaves) {
         
@@ -23,7 +25,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         
         Table tablaPaleta = new Table();
         tablaPaleta.setTouchable(Touchable.enabled);
-        clbp = new ClickListenerBotonPaleta();
+        clbp = new ClickListenerBotonPaleta(guerraAeronaves);
         
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
@@ -35,7 +37,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         agregarElementoPaleta(tablaPaleta,"paleta/nubed.png",clbp,1).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
         agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",clbp,2).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",clbp,3).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/avion_rojod.png",clbp,3).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
         agregarElementoPaleta(tablaPaleta,"paleta/edificiod.png",clbp,4).size(GuerraAeronaves.tamañoCasilla);
         agregarElementoPaleta(tablaPaleta,"paleta/montanad.png",clbp,5).size(GuerraAeronaves.tamañoCasilla);
@@ -64,6 +66,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         
+        
         Table tablaMapa = new Table();
         
         // Código de prueba para agregar elementos a la tabla del mapa
@@ -74,6 +77,22 @@ public class ScreenEditorNuevo extends ScreenAdapter {
                 tablaMapa.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
             }
         }
+        
+        tablaMapa.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println(ultimoClickeado.getName());
+                switch(Integer.getInteger(ultimoClickeado.getName())) {
+                    case 0:
+                        
+                        break;
+                    case 1:
+                        
+                        break;
+                }
+                //System.out.println(event.getListenerActor().getName());
+            }
+        });
         // Fin de código de prueba
         
         Table tablaContenedora = new Table();
@@ -91,6 +110,8 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         stage = new Stage();
         stage.addActor(tablaContenedora);
         Gdx.input.setInputProcessor(stage);
+        
+        
     }
    
     @Override
@@ -116,7 +137,13 @@ public class ScreenEditorNuevo extends ScreenAdapter {
     private Cell<Image> agregarElementoPaleta(Table tabla, String rutaTextura, ClickListenerBotonPaleta listener, int id) {
         Image image = new Image(new Texture(rutaTextura));
         image.setName(Integer.toString(id));
+        if(id == 0) ultimoClickeado = image;
         image.addListener(listener);
         return tabla.add(image);
+    }
+    
+    public void setUltimoClickeado(Actor x) {
+        ultimoClickeado = x;
+        //System.out.println(x.getName());
     }
 }

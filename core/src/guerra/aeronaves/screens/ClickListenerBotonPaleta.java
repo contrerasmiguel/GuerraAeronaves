@@ -8,20 +8,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ClickListenerBotonPaleta extends ClickListener{
-    private Actor clickeado;
+    protected GuerraAeronaves guerraAeronaves;
     
-    public ClickListenerBotonPaleta() { ;
+    public ClickListenerBotonPaleta(GuerraAeronaves guerr) {
+        guerraAeronaves = guerr;
     }
     
     @Override
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
-        //System.out.println(event.getListenerActor().getName());
-        clickeado = event.getListenerActor();
-    }
-    
-    public Actor getClickeado() {
-        return clickeado;
-    }
-    
+        guerraAeronaves.getScreenEditorNuevo().setUltimoClickeado(event.getListenerActor());
+    }  
 }

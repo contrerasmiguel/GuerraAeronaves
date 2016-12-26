@@ -10,6 +10,8 @@ public class GuerraAeronaves extends Game {
     
     public SpriteBatch batch;
     
+    private ScreenEditorNuevo sc_editor;
+    
     private Music music_menu, music_edicion, music_juego;
     
     public static final float velocidad = 60;
@@ -61,8 +63,13 @@ public class GuerraAeronaves extends Game {
         setMusica(music_edicion);
     }
     public void setScreenEditorNuevo() {
-        setScreen(new ScreenEditorNuevo(this));
+        sc_editor = new ScreenEditorNuevo(this);
+        setScreen(sc_editor);
         setMusica(music_edicion);
+    }
+    
+    public ScreenEditorNuevo getScreenEditorNuevo() {
+        return sc_editor;
     }
 
     public void setMusica(Music m) {
