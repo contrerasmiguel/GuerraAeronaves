@@ -16,7 +16,6 @@ public class ScreenEditorNuevo extends ScreenAdapter {
 
     private final Stage stage;
     private ClickListenerBotonPaleta clbp;
-    private int seleccion;
     
     public ScreenEditorNuevo(GuerraAeronaves guerraAeronaves) {
         
@@ -25,7 +24,6 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         Table tablaPaleta = new Table();
         tablaPaleta.setTouchable(Touchable.enabled);
         clbp = new ClickListenerBotonPaleta();
-        seleccion = 0; // ¿Esto va aqui?
         
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
@@ -77,13 +75,6 @@ public class ScreenEditorNuevo extends ScreenAdapter {
             }
         }
         // Fin de código de prueba
-        
-        tablaMapa.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println(seleccion);
-            }
-        });
         
         Table tablaContenedora = new Table();
         tablaContenedora.setSize(GuerraAeronaves.getNumColumnasEditor() 
