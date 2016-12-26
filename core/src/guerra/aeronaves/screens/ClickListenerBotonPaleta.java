@@ -5,14 +5,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ClickListenerBotonPaleta extends ClickListener{
+    private int aux;
     
     public ClickListenerBotonPaleta() { 
+        aux = 0;
     }
     
     @Override
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
-        //System.out.println("I got clicked in X: "+x+", Y: "+y);
+        //System.out.println(event.getListenerActor().getName());
+        for(int i=0;i==Integer.parseInt(event.getListenerActor().getName());i++) aux = i;
+    }
+    
+    public int getAux() {
+        return aux;
     }
     
 }

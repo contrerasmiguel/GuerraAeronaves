@@ -9,21 +9,23 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ScreenEditorNuevo extends ScreenAdapter {
 
     private final Stage stage;
+    private ClickListenerBotonPaleta clbp;
+    private int seleccion;
     
     public ScreenEditorNuevo(GuerraAeronaves guerraAeronaves) {
         
-        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentanaEditor()
-            , GuerraAeronaves.getAltoVentanaEditor());   
+        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentanaEditor(), GuerraAeronaves.getAltoVentanaEditor());   
         
         Table tablaPaleta = new Table();
         tablaPaleta.setTouchable(Touchable.enabled);
+        clbp = new ClickListenerBotonPaleta();
+        seleccion = 0; // ¿Esto va aqui?
         
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
@@ -31,35 +33,35 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/vaciod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/nubed.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/vaciod.png",clbp,0).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/nubed.png",clbp,1).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",clbp,2).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",clbp,3).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/edificiod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/montanad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/edificiod.png",clbp,4).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/montanad.png",clbp,5).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_rojod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_azuld.png",clbp,6).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_rojod.png",clbp,7).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_rojod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_azuld.png",clbp,8).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_rojod.png",clbp,9).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/pickup_gasolinad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/pickup_vidad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_gasolinad.png",clbp,10).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_vidad.png",clbp,11).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/pickup_municiond.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
-        agregarElementoPaleta(tablaPaleta,"paleta/powerup_vidad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_municiond.png",clbp,12).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/powerup_vidad.png",clbp,13).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/btn_guardar.png",new ClickListenerBotonPaleta()).colspan(2);
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_guardar.png",clbp,14).colspan(2);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/btn_girar.png",new ClickListenerBotonPaleta()).colspan(2);
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_girar.png",clbp,15).colspan(2);
         tablaPaleta.row();
-        agregarElementoPaleta(tablaPaleta,"paleta/btn_limpiar.png",new ClickListenerBotonPaleta()).colspan(2);
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_limpiar.png",clbp,16).colspan(2);
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
@@ -75,6 +77,13 @@ public class ScreenEditorNuevo extends ScreenAdapter {
             }
         }
         // Fin de código de prueba
+        
+        tablaMapa.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println(seleccion);
+            }
+        });
         
         Table tablaContenedora = new Table();
         tablaContenedora.setSize(GuerraAeronaves.getNumColumnasEditor() 
@@ -113,8 +122,9 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         stage.dispose();
     }
     
-    private Cell<Image> agregarElementoPaleta(Table tabla, String rutaTextura, ClickListenerBotonPaleta listener) {
+    private Cell<Image> agregarElementoPaleta(Table tabla, String rutaTextura, ClickListenerBotonPaleta listener, int id) {
         Image image = new Image(new Texture(rutaTextura));
+        image.setName(Integer.toString(id));
         image.addListener(listener);
         return tabla.add(image);
     }
