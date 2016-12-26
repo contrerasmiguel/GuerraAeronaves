@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Value;
@@ -30,47 +31,38 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/vaciod.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/nubed.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/vaciod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/nubed.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/avion_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/avion_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/avion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/edificiod.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/montanad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/edificiod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/montanad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/est_gasolina_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/est_gasolina_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_gasolina_rojod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/est_municion_azuld.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/est_municion_rojod.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_azuld.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/est_municion_rojod.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/pickup_gasolinad.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/pickup_vidad.png"))).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_gasolinad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_vidad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/pickup_municiond.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("paleta/powerup_vidad.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
-        tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/btn_guardar.png"))).colspan(2);
-        tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/btn_girar.png"))).colspan(2);
-        tablaPaleta.row();
-        tablaPaleta.add(new Image(new Texture("paleta/btn_limpiar.png"))).colspan(2);
+        agregarElementoPaleta(tablaPaleta,"paleta/pickup_municiond.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
+        agregarElementoPaleta(tablaPaleta,"paleta/powerup_vidad.png",new ClickListenerBotonPaleta()).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.row();
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
-        
-        tablaPaleta.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                
-            System.out.println("I got clicked in X: "+x+", Y: "+y);
-            
-            }
-        });
+        tablaPaleta.row();
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_guardar.png",new ClickListenerBotonPaleta()).colspan(2);
+        tablaPaleta.row();
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_girar.png",new ClickListenerBotonPaleta()).colspan(2);
+        tablaPaleta.row();
+        agregarElementoPaleta(tablaPaleta,"paleta/btn_limpiar.png",new ClickListenerBotonPaleta()).colspan(2);
+        tablaPaleta.row();
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+        tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         
         Table tablaMapa = new Table();
         
@@ -121,4 +113,9 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         stage.dispose();
     }
     
+    private Cell<Image> agregarElementoPaleta(Table tabla, String rutaTextura, ClickListenerBotonPaleta listener) {
+        Image image = new Image(new Texture(rutaTextura));
+        image.addListener(listener);
+        return tabla.add(image);
+    }
 }
