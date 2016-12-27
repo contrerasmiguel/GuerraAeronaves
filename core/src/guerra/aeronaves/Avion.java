@@ -1,11 +1,17 @@
 package guerra.aeronaves;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 public class Avion extends Elemento {
     
     private boolean esRojo;
     private int direccion;
     private int gasolina;
     private int municion;
+
+    public Avion(int x, int y, Image i, boolean v) {
+        super(x, y, i, v);
+    }
 
     public boolean isEsRojo() {
         return esRojo;

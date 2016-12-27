@@ -11,13 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import guerra.aeronaves.Elemento;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ScreenEditorNuevo extends ScreenAdapter {
 
     private final Stage stage;
     private ClickListenerBotonPaleta clbp;
-    private Actor ultimoClickeado;
+    private Elemento ultimoClickeado;
+    private Elemento el[][];
     
     public ScreenEditorNuevo(GuerraAeronaves guerraAeronaves) {
         
@@ -26,6 +28,7 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         Table tablaPaleta = new Table();
         tablaPaleta.setTouchable(Touchable.enabled);
         clbp = new ClickListenerBotonPaleta(guerraAeronaves);
+        el = new Elemento[guerraAeronaves.casillasV][guerraAeronaves.casillasH];
         
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
         tablaPaleta.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
@@ -68,13 +71,17 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         
         
         Table tablaMapa = new Table();
+        tablaMapa.setTouchable(Touchable.enabled);
         
         // Código de prueba para agregar elementos a la tabla del mapa
         tablaMapa.setDebug(true); // Líneas de la grilla
         for (int filas = 0; filas < GuerraAeronaves.casillasV; ++filas) {
             tablaMapa.row();
             for (int columnas = 0; columnas < GuerraAeronaves.casillasH; ++columnas) {
-                tablaMapa.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+                //tablaMapa.add(new Image(new Texture("cielo1.png"))).size(GuerraAeronaves.tamañoCasilla);
+                Image im = new Image(new Texture("cielo1.png"));
+                el[filas][columnas] = new Elemento(filas,columnas,im, true) {};
+                tablaMapa.add(el[filas][columnas]).size(GuerraAeronaves.tamañoCasilla);
             }
         }
         
@@ -82,13 +89,12 @@ public class ScreenEditorNuevo extends ScreenAdapter {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println(ultimoClickeado.getName());
-                switch(Integer.getInteger(ultimoClickeado.getName())) {
-                    case 0:
-                        
-                        break;
-                    case 1:
-                        
-                        break;
+                for(int i=0;i<14;i++) {
+                    for(int j=0;j<19;j++) {
+                        if(event.getListenerActor().equals(el[i][j])) {
+                            el[i][j] = ultimoClickeado;
+                        }
+                    }
                 }
                 //System.out.println(event.getListenerActor().getName());
             }
@@ -137,12 +143,12 @@ public class ScreenEditorNuevo extends ScreenAdapter {
     private Cell<Image> agregarElementoPaleta(Table tabla, String rutaTextura, ClickListenerBotonPaleta listener, int id) {
         Image image = new Image(new Texture(rutaTextura));
         image.setName(Integer.toString(id));
-        if(id == 0) ultimoClickeado = image;
+        if(id == 0) ultimoClickeado.setImg(image);
         image.addListener(listener);
         return tabla.add(image);
     }
     
-    public void setUltimoClickeado(Actor x) {
+    public void setUltimoClickeado(Elemento x) {
         ultimoClickeado = x;
         //System.out.println(x.getName());
     }

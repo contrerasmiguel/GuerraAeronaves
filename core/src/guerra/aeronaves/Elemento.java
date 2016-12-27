@@ -1,14 +1,19 @@
 package guerra.aeronaves;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import java.awt.Point;
 
-abstract public class Elemento {
+abstract public class Elemento extends Actor{
     
     protected Point posicion;
     protected boolean visible;
     protected int vida;
     private Image img;
+    
+    public Elemento(int x, int y, Image i, boolean v) {
+        posicion.x = x; posicion.y = y; img = i; visible = v;
+    }
 
     public Point getPosicion() {
         return posicion;
