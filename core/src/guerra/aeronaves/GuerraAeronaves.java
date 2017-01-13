@@ -14,16 +14,15 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    public static final float velocidad = 60;
-    public static final int btnAltura = 82;
-    public static final int btnAnchura = 284;
-    public static final int tamañoCasilla = 46;
-    public static final int tamañoCasillaEditor = 32;
-    public static final int casillasH = 19;
-    public static final int casillasV = 14;
-    
+    public static final float VELOCIDAD = 60;
+    public static final int ALTURA_BOTON = 82;
+    public static final int ANCHO_BOTON = 284;
+    public static final int TAMANO_CASILLA = 46;
+    public static final int TAMANO_CASILLA_EDITOR = 46;
+    public static final int NUM_COLUMNAS = 19;
+    public static final int NUM_FILAS = 14;
     public static final int NUM_COLUMNAS_PALETA = 2;
-    public static final int NUM_FILAS_PALETA = casillasV;
+    public static final int NUM_FILAS_PALETA = NUM_FILAS;
     
     @Override
     public void create () {
@@ -91,27 +90,27 @@ public class GuerraAeronaves extends Game {
     }
     
     public static final int getAnchoVentana() {
-        return casillasH * tamañoCasilla;
+        return NUM_COLUMNAS * TAMANO_CASILLA;
     }
     
     public static final int getAltoVentana() {
-        return casillasV * tamañoCasilla;
+        return NUM_FILAS * TAMANO_CASILLA;
     }
     
     public static final int getNumColumnasEditor() {
-        return casillasH + NUM_COLUMNAS_PALETA;
+        return NUM_COLUMNAS + NUM_COLUMNAS_PALETA;
     }
     
     public static final int getNumFilasEditor() {
-        return casillasV;
+        return NUM_FILAS;
     }
     
     public static final int getAnchoVentanaEditor() {
-        return getNumColumnasEditor() * tamañoCasilla + 1;
+        return getNumColumnasEditor() * TAMANO_CASILLA_EDITOR;
     }
     
     public static final int getAltoVentanaEditor() {
-        return getNumFilasEditor() * tamañoCasilla + 1;
+        return getNumFilasEditor() * TAMANO_CASILLA_EDITOR + 1;
     }    
     
 }

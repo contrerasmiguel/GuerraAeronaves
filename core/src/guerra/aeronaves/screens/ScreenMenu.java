@@ -37,9 +37,9 @@ public abstract class ScreenMenu extends ScreenAdapter {
         ImageButton ib = new ImageButton(new SpriteDrawable(new Sprite(
                 new Texture(Gdx
                 .files.internal(rutaTextura)))));
-        ib.setSize(GuerraAeronaves.btnAnchura, GuerraAeronaves.btnAltura);
+        ib.setSize(GuerraAeronaves.ANCHO_BOTON, GuerraAeronaves.ALTURA_BOTON);
         ib.setX(GuerraAeronaves.getAnchoVentana()/2 - GuerraAeronaves
-                .btnAnchura/2);
+                .ANCHO_BOTON/2);
         ib.setZIndex(1);
         stage.addActor(ib);
         return ib;
