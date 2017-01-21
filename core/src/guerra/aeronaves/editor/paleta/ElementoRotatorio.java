@@ -4,13 +4,13 @@ import guerra.aeronaves.editor.mapa.ElementoMapa;
 
 public class ElementoRotatorio extends ElementoPaleta {
 
-    public ElementoRotatorio(String rutaTexturaPaleta, String rutaTexturaMapa) {
-        super(rutaTexturaPaleta, rutaTexturaMapa);
+    public ElementoRotatorio(String rutaTexturaPaleta, String rutaTexturaMapa, int id) {
+        super(rutaTexturaPaleta, rutaTexturaMapa, id);
     }
 
     @Override
     public ElementoMapa producirElementoMapa() {
         return new guerra.aeronaves.editor.mapa
-                .ElementoNoRotatorio(rutaTexturaMapa);
+                .ElementoRotatorio(rutaTexturaMapa, id);
     }
 }

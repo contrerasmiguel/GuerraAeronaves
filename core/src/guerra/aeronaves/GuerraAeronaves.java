@@ -24,6 +24,24 @@ public class GuerraAeronaves extends Game {
     public static final int NUM_COLUMNAS_PALETA = 2;
     public static final int NUM_FILAS_PALETA = NUM_FILAS;
     
+    public static final int
+              ID_CIELO = 0
+            , ID_AVION_ROJO = 4 
+            , ID_AVION_AZUL = 9 
+            , ID_PROYECTIL = 14
+            , ID_NUBE = 19
+            , ID_MONTANA = 24
+            , ID_EDIFICIO = 29
+            , ID_PICKUP_VIDA = 34
+            , ID_PICKUP_GASOLINA = 39
+            , ID_POWERUP_VIDA = 49
+            , ID_POWERUP_MUNICION = 54
+            , ID_PICKUP_MUNICION = 44 
+            , ID_ESTACION_GASOLINA_ROJO = 64
+            , ID_ESTACION_GASOLINA_AZUL = 65
+            , ID_ESTACION_MUNICION_ROJO = 69
+            , ID_ESTACION_MUNICION_AZUL = 70;
+    
     @Override
     public void create () {
         batch = new SpriteBatch();

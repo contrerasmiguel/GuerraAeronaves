@@ -1,14 +1,16 @@
 package guerra.aeronaves.editor.mapa;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 public class ElementoRotatorio extends ElementoMapa {
        
     private Direccion direccion;
     
-    public ElementoRotatorio(String rutaTextura) {
-        super(rutaTextura);
+    public ElementoRotatorio(String rutaTextura, int id) {
+        super(rutaTextura, id);
         this.direccion = Direccion.NORTE;
-    }
-
+    } 
+    
     public Direccion getDireccion() {
         return direccion;
     }
@@ -17,21 +19,28 @@ public class ElementoRotatorio extends ElementoMapa {
         this.direccion = direccion;
     }
     
-    public void rotarDerecha() {
+    public void girarIzquierda() {
         switch (direccion) {
         case NORTE:
-            direccion = Direccion.ESTE;
+            direccion = Direccion.OESTE;
             break;
         case ESTE:
             direccion = Direccion.SUR;
             break;
         case SUR:
-            direccion = Direccion.OESTE;
+            direccion = Direccion.ESTE;
             break;
         default:
             direccion = Direccion.NORTE;
             break;
         }
+        
+        getImage().setOrigin(getImage().getWidth()/2, getImage().getHeight()/2);
+        setOrigin(getWidth()/2, getHeight()/2);   
+        
+        System.out.println("Rotation 1 = " + getImage().getRotation());
+        getImage().setRotation(getImage().getRotation() + 90);
+        System.out.println("Rotation 2 = " + getImage().getRotation());
     }
-    
+
 }

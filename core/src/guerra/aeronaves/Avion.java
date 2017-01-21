@@ -9,8 +9,8 @@ public class Avion extends Elemento {
     private int gasolina;
     private int municion;
 
-    public Avion(int x, int y, Image i, boolean v) {
-        super(x, y, i, v);
+    public Avion(int id, int x, int y, Image i, boolean v) {
+        super(id, x, y, i, v);
     }
 
     public boolean isEsRojo() {

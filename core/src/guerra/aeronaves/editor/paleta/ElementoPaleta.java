@@ -10,15 +10,17 @@ import guerra.aeronaves.editor.mapa.ElementoMapa;
 public abstract class ElementoPaleta extends ElementoSeleccionable {
     
     protected final String rutaTexturaMapa;
+    protected final int id;
     private final ShapeRenderer rectanguloSeleccion;
     private final float DISTANCIA_A_BORDE = 1.0f;
     private boolean seleccionado;
     
-    public ElementoPaleta(String rutaTexturaPaleta, String rutaTexturaMapa) {
+    public ElementoPaleta(String rutaTexturaPaleta, String rutaTexturaMapa, int id) {
         super(rutaTexturaPaleta);
         this.rutaTexturaMapa = rutaTexturaMapa;
         this.rectanguloSeleccion = new ShapeRenderer();
         seleccionado = false;
+        this.id = id;
     }
 
     public boolean isSeleccionado() {

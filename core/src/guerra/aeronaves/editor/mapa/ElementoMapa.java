@@ -4,8 +4,15 @@ import guerra.aeronaves.editor.ElementoSeleccionable;
 
 public abstract class ElementoMapa extends ElementoSeleccionable {
     
-    public ElementoMapa(String rutaTextura) {
+    private final int id;
+    
+    public ElementoMapa(String rutaTextura, int id) {
         super(rutaTextura);
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
     }
     
 }

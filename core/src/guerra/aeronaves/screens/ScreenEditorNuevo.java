@@ -54,4 +54,5 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         super.dispose();
         stage.dispose();
     }
+    
 }
