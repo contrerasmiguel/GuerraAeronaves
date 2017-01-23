@@ -36,6 +36,7 @@ public class Mapa extends Table {
     }
 
     private void dibujarCielo() {
+        setTouchable(Touchable.disabled);
         for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS; ++filas) {
             row();
             for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS; ++columnas) {

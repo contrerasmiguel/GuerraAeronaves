@@ -78,10 +78,10 @@ public class ScreenJuego extends ScreenAdapter {
                 //System.out.print(""+matriz[i][j]+" ");
                 if(matriz[i][j] == GuerraAeronaves.ID_AVION_ROJO) {
                     //Por defecto los aviones son rojos. Para hacerlos azules llamar a setEsRojo()
-                    Image iRojo = new Image(new TextureRegion(new Texture("avion_rojo.png")));
+                    /*Image iRojo = new Image(new TextureRegion(new Texture("avion_rojo.png")));
                     Rojo = new Avion(GuerraAeronaves.ID_AVION_ROJO,iRojo,true);
-                    //Rojo.setPosition(j*GuerraAeronaves.TAMANO_CASILLA, i*GuerraAeronaves.TAMANO_CASILLA);
-                    //tablita.add(Rojo);
+                    Rojo.setPosition(j*GuerraAeronaves.TAMANO_CASILLA, i*GuerraAeronaves.TAMANO_CASILLA);
+                    tablita.add(Rojo);*/
                 }
             }
         }
