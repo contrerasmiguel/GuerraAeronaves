@@ -24,6 +24,10 @@ public class GuerraAeronaves extends Game {
     public static final int NUM_COLUMNAS_PALETA = 2;
     public static final int NUM_FILAS_PALETA = NUM_FILAS;
     
+    public static final int GASOLINA_INICIAL = 100;
+    public static final int MUNICION_INICIAL = 5;
+    public static final int VIDA_INICIAL = 3;
+    
     public static final int
               ID_CIELO = 0
             , ID_AVION_ROJO = 4 

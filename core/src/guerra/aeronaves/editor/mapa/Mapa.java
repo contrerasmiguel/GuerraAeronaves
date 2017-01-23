@@ -12,7 +12,7 @@ import guerra.aeronaves.editor.paleta.Paleta;
 public class Mapa extends Table {
     
     private final ClickListenerCasillaMapa clickListenerCasillaMapa;
-    private final Paleta pal;
+    private Paleta pal;
     
     public Mapa(Paleta paleta) {
         this.clickListenerCasillaMapa = new ClickListenerCasillaMapa(paleta);
@@ -30,13 +30,30 @@ public class Mapa extends Table {
         pal.setClickPaletaListener(this);
     }
     
+    public Mapa() {
+        this.clickListenerCasillaMapa = new ClickListenerCasillaMapa();
+        dibujarCielo();
+    }
+
+    private void dibujarCielo() {
+        for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS; ++filas) {
+            row();
+            for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS; ++columnas) {
+                ImageButton ib = new ElementoNoRotatorio("cielo1.png", GuerraAeronaves.ID_CIELO);
+                add(ib).size(GuerraAeronaves.TAMANO_CASILLA);
+            }
+        }
+    }
+    
     public class ClickListenerCasillaMapa extends ClickListener {
 
-        private final Paleta paleta;
+        private Paleta paleta;
 
         public ClickListenerCasillaMapa(Paleta paleta) {
             this.paleta = paleta;
         }
+        
+        public ClickListenerCasillaMapa() {}
 
         @Override
         public void clicked(InputEvent event, float x, float y) {

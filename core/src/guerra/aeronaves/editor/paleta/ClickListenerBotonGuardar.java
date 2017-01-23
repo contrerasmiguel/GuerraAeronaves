@@ -24,11 +24,10 @@ public class ClickListenerBotonGuardar extends ClickListener{
         Array<Cell> aux = mapa.getCells();
         String contenido = "";
         int n = 0;
-        for(int i=0;i<GuerraAeronaves.NUM_COLUMNAS;i++) {
+        for(int i=0;i<GuerraAeronaves.NUM_FILAS;i++) {
             contenido += "\n";
-            for(int j=0;j<GuerraAeronaves.NUM_FILAS;j++) {
-                contenido += ((ElementoMapa)aux.get(n).getActor()).getId()+"\t";
-                //System.out.println(((ElementoMapa)aux.get(n).getActor()).getId()+"\t");
+            for(int j=0;j<GuerraAeronaves.NUM_COLUMNAS;j++) {
+                contenido += ((ElementoMapa)aux.get(n).getActor()).getId()+" ";
                 n++;
             }
         }

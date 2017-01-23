@@ -1,6 +1,9 @@
 package guerra.aeronaves;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Avion extends Elemento {
     
@@ -9,8 +12,14 @@ public class Avion extends Elemento {
     private int gasolina;
     private int municion;
 
-    public Avion(int id, int x, int y, Image i, boolean v) {
-        super(id, x, y, i, v);
+    public Avion(int id, Image i, boolean v) {
+        super(id, i, v);
+        setVida(GuerraAeronaves.VIDA_INICIAL);
+        gasolina = GuerraAeronaves.GASOLINA_INICIAL;
+        municion = GuerraAeronaves.MUNICION_INICIAL;
+        
+        setHeight(i.getHeight());
+        setWidth(i.getWidth());
     }
 
     public boolean isEsRojo() {

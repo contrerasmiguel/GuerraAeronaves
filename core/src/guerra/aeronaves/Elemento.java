@@ -1,5 +1,7 @@
 package guerra.aeronaves;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import java.awt.Point;
@@ -7,13 +9,14 @@ import java.awt.Point;
 abstract public class Elemento extends Actor {
     
     protected int id;
-    protected Point posicion;
     protected boolean visible;
     protected int vida;
     private Image img;
     
-    public Elemento(int id, int x, int y, Image i, boolean v) {
-        this.id = id; posicion.x = x; posicion.y = y; img = i; visible = v;
+    public Elemento(int idx, Image i, boolean v) {
+        this.id = idx;
+        img = i;
+        visible = v;
     }
 
     public int getId() {
@@ -22,14 +25,6 @@ abstract public class Elemento extends Actor {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Point getPosicion() {
-        return posicion;
-    }
-
-    public void setPosicion(Point posicion) {
-        this.posicion = posicion;
     }
 
     public boolean isVisible() {
