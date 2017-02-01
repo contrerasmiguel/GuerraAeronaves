@@ -19,7 +19,7 @@ public class ClickListenerBotonGirar extends ClickListener {
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
         botonGirarSeleccionado = !botonGirarSeleccionado;
-        System.out.println("botonGirarSeleccionado = " + botonGirarSeleccionado);
+        //System.out.println("botonGirarSeleccionado = " + botonGirarSeleccionado);
     }
     
 }

@@ -1,5 +1,6 @@
 package guerra.aeronaves.editor.mapa;
 
+import guerra.aeronaves.Direccion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class ElementoRotatorio extends ElementoMapa {
@@ -8,7 +9,7 @@ public class ElementoRotatorio extends ElementoMapa {
     
     public ElementoRotatorio(String rutaTextura, int id) {
         super(rutaTextura, id);
-        this.direccion = Direccion.NORTE;
+        this.direccion = Direccion.ARRIBA;
     } 
     
     public Direccion getDireccion() {
@@ -21,17 +22,17 @@ public class ElementoRotatorio extends ElementoMapa {
     
     public void girarIzquierda() {
         switch (direccion) {
-        case NORTE:
-            direccion = Direccion.OESTE;
+        case ARRIBA:
+            direccion = Direccion.IZQUIERDA;
             break;
-        case ESTE:
-            direccion = Direccion.SUR;
+        case DERECHA:
+            direccion = Direccion.ABAJO;
             break;
-        case SUR:
-            direccion = Direccion.ESTE;
+        case ABAJO:
+            direccion = Direccion.DERECHA;
             break;
         default:
-            direccion = Direccion.NORTE;
+            direccion = Direccion.ARRIBA;
             break;
         }
         

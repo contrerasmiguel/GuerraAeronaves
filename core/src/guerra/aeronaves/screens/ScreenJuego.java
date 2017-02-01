@@ -1,6 +1,6 @@
 package guerra.aeronaves.screens;
 
-import Juego.Juego;
+import guerra.aeronaves.juego.Juego;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
