@@ -14,7 +14,7 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    public static final float VELOCIDAD = 60;
+    public static final long VELOCIDAD = 1;
     public static final int ALTURA_BOTON = 82;
     public static final int ANCHO_BOTON = 284;
     public static final int TAMANO_CASILLA = 46;
@@ -23,6 +23,9 @@ public class GuerraAeronaves extends Game {
     public static final int NUM_FILAS = 14;
     public static final int NUM_COLUMNAS_PALETA = 2;
     public static final int NUM_FILAS_PALETA = NUM_FILAS;
+    public static final int INDICE_FONDO = 0;
+    public static final int INDICE_MEDIO = 1;
+    public static final int INDICE_ALTO = 2;
     
     public static final int GASOLINA_INICIAL = 100;
     public static final int MUNICION_INICIAL = 5;
