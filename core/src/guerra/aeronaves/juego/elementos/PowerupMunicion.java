@@ -1,19 +1,18 @@
-package guerra.aeronaves.juego;
+package guerra.aeronaves.juego.elementos;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class Elemento extends Image {
+public class PowerupMunicion extends Image{
+    int id;
     
-    private final int id;
-    
-    public Elemento(Drawable d, int id) {
+    public PowerupMunicion(Drawable d, int id) {
         super(d);
         this.id = id;
     }
-
+    
     public int getId() {
         return id;
     }
- 
+    
 }
