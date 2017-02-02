@@ -1,18 +1,23 @@
 package guerra.aeronaves.juego.elementos;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.math.Vector2;
+import guerra.aeronaves.GuerraAeronaves;
 
-public class PickupGasolina extends Image{
-    int id;
+public class PickupGasolina extends Elemento {
     
-    public PickupGasolina(Drawable d, int id) {
-        super(d);
-        this.id = id;
+    public PickupGasolina(Vector2 posInicial) {
+        super("gasolina.png", GuerraAeronaves.ID_PICKUP_GASOLINA, posInicial);
+        colocarEnPosicionInicial();
     }
     
-    public int getId() {
-        return id;
+    @Override
+    public final void colocarEnPosicionInicial() {
+        super.colocarEnPosicionInicial();
     }
+    
+    @Override
+    public boolean esColisionable() {
+        return false;
+    } 
     
 }

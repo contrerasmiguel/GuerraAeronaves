@@ -3,10 +3,10 @@ package guerra.aeronaves.juego.elementos;
 import com.badlogic.gdx.math.Vector2;
 import guerra.aeronaves.GuerraAeronaves;
 
-public class PickupMunicion extends Elemento {
+public class EstacionMunicionRojo extends Elemento {   
     
-    public PickupMunicion(Vector2 posInicial) {
-        super("municion", GuerraAeronaves.ID_PICKUP_MUNICION, posInicial);
+    public EstacionMunicionRojo(Vector2 posInicial) {
+        super("estacion_misiles_rojo.png", GuerraAeronaves.ID_ESTACION_MUNICION_ROJO, posInicial);
         colocarEnPosicionInicial();
     }
     

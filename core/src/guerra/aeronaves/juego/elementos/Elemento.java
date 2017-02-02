@@ -3,6 +3,7 @@ package guerra.aeronaves.juego.elementos;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
@@ -10,25 +11,23 @@ import com.badlogic.gdx.utils.Timer;
 import guerra.aeronaves.GuerraAeronaves;
 import java.util.ArrayDeque;
 
-public class Elemento extends Image {
+public abstract class Elemento extends Image {
     
-    private final int id;
+    protected final int id;
+    protected Vector2 posInicial;
     
-    public Elemento(Drawable d, int id) {
-        super(d);
+    public Elemento(String rutaSprite, int id, Vector2 posInicial) {
+        super(new SpriteDrawable(new Sprite(new Texture(Gdx.files
+                .internal(rutaSprite)))));
         this.id = id;
+        this.posInicial = posInicial;
     }
 
     public int getId() {
         return id;
     }
     
-    public boolean esColisionable() {
-        return id == GuerraAeronaves.ID_AVION_AZUL 
-                || id == GuerraAeronaves.ID_AVION_ROJO
-                || id == GuerraAeronaves.ID_EDIFICIO
-                || id == GuerraAeronaves.ID_MONTANA;
-    }
+    public abstract boolean esColisionable();
     
     public void crearExplosion(float tiempo) {
         final float tiempoSprite = tiempo / 6;
@@ -49,6 +48,18 @@ public class Elemento extends Image {
                 }
             }
         }, 0, tiempoSprite, GuerraAeronaves.RUTA_EXPLOSIONES.size() + 1);
-    }    
+    }
+    
+    public void colocarEnPosicionInicial() {
+        setPosition(posInicial.x, posInicial.y);
+    }
+
+    public Vector2 getPosInicial() {
+        return posInicial;
+    }
+
+    public void setPosInicial(Vector2 posInicial) {
+        this.posInicial = posInicial;
+    }
  
 }

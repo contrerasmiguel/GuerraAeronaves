@@ -1,20 +1,18 @@
 package guerra.aeronaves.juego.elementos;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.GuerraAeronaves;
 
-public class Avion extends Elemento {
+public class AvionRojo extends Elemento {
     
     private Direccion dir;
     private Direccion proxDir;
     private boolean destruido;
-    private Vector2 posInicial;
     private Direccion dirInicial;
     
-    public Avion(Drawable d, int id, Vector2 posInicial, Direccion dir) {
-        super(d, id);
+    public AvionRojo(Vector2 posInicial, Direccion dir) {
+        super("avion_rojo.png", GuerraAeronaves.ID_AVION_ROJO, posInicial);
         destruido = false;
         this.dir = dir;
         proxDir = this.dir;
@@ -52,19 +50,12 @@ public class Avion extends Elemento {
         this.destruido = destruido;
     }
 
-    public Vector2 getPosInicial() {
-        return posInicial;
-    }
-
-    public void setPosInicial(Vector2 posInicial) {
-        this.posInicial = posInicial;
-    }
-
+    @Override
     public final void colocarEnPosicionInicial() {
         dir = dirInicial;
         proxDir = dir;
         actualizarRotacion();
-        setPosition(posInicial.x, posInicial.y);
+        super.colocarEnPosicionInicial();
     }
     
     private void actualizarRotacion() {
@@ -87,16 +78,16 @@ public class Avion extends Elemento {
     private void actualizarPosicion() {
         switch (dir) {
             case ARRIBA:
-                setPosition(getX(),getY()+GuerraAeronaves.VELOCIDAD_AVION);
+                moveBy(0, GuerraAeronaves.VELOCIDAD_AVION);
                 break;
             case ABAJO:
-                setPosition(getX(),getY()-GuerraAeronaves.VELOCIDAD_AVION);
+                moveBy(0, -GuerraAeronaves.VELOCIDAD_AVION);
                 break;
             case DERECHA:
-                setPosition(getX()+GuerraAeronaves.VELOCIDAD_AVION,getY());
+                moveBy(GuerraAeronaves.VELOCIDAD_AVION, 0);
                 break;
             default:
-                setPosition(getX()-GuerraAeronaves.VELOCIDAD_AVION,getY());
+                moveBy(-GuerraAeronaves.VELOCIDAD_AVION, 0);
                 break;
         }           
     }
@@ -107,6 +98,11 @@ public class Avion extends Elemento {
 
     public void setDirInicial(Direccion dirInicial) {
         this.dirInicial = dirInicial;
+    }
+
+    @Override
+    public boolean esColisionable() {
+        return true;
     }
     
 }
