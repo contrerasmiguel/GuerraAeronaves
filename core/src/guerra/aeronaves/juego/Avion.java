@@ -1,43 +1,32 @@
 package guerra.aeronaves.juego;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import guerra.aeronaves.Direccion;
+import guerra.aeronaves.GuerraAeronaves;
 
-public class Avion extends Image {
+public class Avion extends Elemento {
     
-    int id;
-    Direccion dir;
-    Direccion proxDir;
+    private Direccion dir;
+    private Direccion proxDir;
+    private boolean destruido;
+    private Vector2 posInicial;
+    private Direccion dirInicial;
     
-    public Avion(Drawable d, int id, Direccion dir) {
-        super(d);
-        this.id = id;
+    public Avion(Drawable d, int id, Vector2 posInicial, Direccion dir) {
+        super(d, id);
+        destruido = false;
         this.dir = dir;
         proxDir = this.dir;
+        this.posInicial = posInicial;
+        dirInicial = this.dir;
+        colocarEnPosicionInicial();
+        setOrigin(getWidth()/2, getHeight()/2);
     }
 
-    public void actualizar() {
-        setOrigin(getWidth()/2, getHeight()/2);
-        
-        switch (dir) {
-            case ARRIBA:
-                setPosition(getX(),getY()+1);
-                setRotation(0);
-                break;
-            case ABAJO:
-                setPosition(getX(),getY()-1);
-                setRotation(180);
-                break;
-            case DERECHA:
-                setPosition(getX()+1,getY());
-                setRotation(270);
-                break;
-            default:
-                setPosition(getX()-1,getY());
-                setRotation(90);
-                break;
-        }
+    public void mover() {
+        actualizarRotacion();
+        actualizarPosicion();
     }
 
     public void actualizarDireccion() {
@@ -55,8 +44,69 @@ public class Avion extends Image {
         return dir;
     }
 
-    public int getId() {
-        return id;
+    public boolean isDestruido() {
+        return destruido;
+    }
+
+    public void setDestruido(boolean destruido) {
+        this.destruido = destruido;
+    }
+
+    public Vector2 getPosInicial() {
+        return posInicial;
+    }
+
+    public void setPosInicial(Vector2 posInicial) {
+        this.posInicial = posInicial;
+    }
+
+    public final void colocarEnPosicionInicial() {
+        dir = dirInicial;
+        proxDir = dir;
+        actualizarRotacion();
+        setPosition(posInicial.x, posInicial.y);
+    }
+    
+    private void actualizarRotacion() {
+        switch (dir) {
+            case ARRIBA:
+                setRotation(0);
+                break;
+            case ABAJO:
+                setRotation(180);
+                break;
+            case DERECHA:
+                setRotation(270);
+                break;
+            default:
+                setRotation(90);
+                break;
+        }        
+    }
+    
+    private void actualizarPosicion() {
+        switch (dir) {
+            case ARRIBA:
+                setPosition(getX(),getY()+GuerraAeronaves.VELOCIDAD_AVION);
+                break;
+            case ABAJO:
+                setPosition(getX(),getY()-GuerraAeronaves.VELOCIDAD_AVION);
+                break;
+            case DERECHA:
+                setPosition(getX()+GuerraAeronaves.VELOCIDAD_AVION,getY());
+                break;
+            default:
+                setPosition(getX()-GuerraAeronaves.VELOCIDAD_AVION,getY());
+                break;
+        }           
+    }
+
+    public Direccion getDirInicial() {
+        return dirInicial;
+    }
+
+    public void setDirInicial(Direccion dirInicial) {
+        this.dirInicial = dirInicial;
     }
     
 }

@@ -5,16 +5,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import guerra.aeronaves.screens.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class GuerraAeronaves extends Game {
-    
+   
     public SpriteBatch batch;
     
     private ScreenEditorNuevo sc_editor;
     
     private Music music_menu, music_edicion, music_juego;
     
-    public static final float VELOCIDAD = 0.01f;
+    public static final float TIEMPO_RELOJ = 0.01f;
     public static final int ALTURA_BOTON = 82;
     public static final int ANCHO_BOTON = 284;
     public static final int TAMANO_CASILLA = 46;
@@ -30,6 +32,19 @@ public class GuerraAeronaves extends Game {
     public static final int GASOLINA_INICIAL = 100;
     public static final int MUNICION_INICIAL = 5;
     public static final int VIDA_INICIAL = 3;
+    
+    // Tiempo que hay entre la explosión de una aeronave y la restauración de 
+    // la misma.
+    public static final int TIEMPO_REAPARICION = 2;
+    
+    // Tiempo durante el cual se muestran los sprites de explosión
+    public static final float TIEMPO_EXPLOSION = 0.5f;
+    
+    // Pixel por pulso de reloj
+    public static final int VELOCIDAD_AVION = 1;
+    
+    public static final int VELOCIDAD_PROYECTIL = 5;
+
     
     public static final int
               ID_CIELO = 0
@@ -48,6 +63,14 @@ public class GuerraAeronaves extends Game {
             , ID_ESTACION_GASOLINA_AZUL = 65
             , ID_ESTACION_MUNICION_ROJO = 69
             , ID_ESTACION_MUNICION_AZUL = 70;
+    
+    public static final List<String> RUTA_EXPLOSIONES = Arrays.asList(
+              "explosion1.png"
+            , "explosion2.png"
+            , "explosion3.png"
+            , "explosion4.png"
+            , "explosion5.png"
+            , "explosion6.png");
     
     @Override
     public void create () {
