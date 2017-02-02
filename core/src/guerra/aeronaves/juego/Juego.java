@@ -16,7 +16,7 @@ import guerra.aeronaves.GuerraAeronaves;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-public class Juego extends Task{
+public class Juego extends Task {
     private final Avion rojo;
     private final ArrayList<Elemento> elementos;
     
@@ -24,6 +24,7 @@ public class Juego extends Task{
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));
         fondo.setSize(GuerraAeronaves.getAnchoVentana(),GuerraAeronaves.getAltoVentana());
+        
         fondo.setZIndex(GuerraAeronaves.INDICE_FONDO);
         stage.addActor(fondo);
         
@@ -36,8 +37,7 @@ public class Juego extends Task{
                 , posInicialRojo, Direccion.DERECHA);
         
         rojo.setZIndex(GuerraAeronaves.INDICE_MEDIO);
-        stage.addActor(rojo);
-        
+        stage.addActor(rojo); 
     }
     
     public void iniciar() {

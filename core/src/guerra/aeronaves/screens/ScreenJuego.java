@@ -4,17 +4,11 @@ import guerra.aeronaves.juego.Juego;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import guerra.aeronaves.GuerraAeronaves;
-import guerra.aeronaves.editor.mapa.ElementoNoRotatorio;
-import guerra.aeronaves.editor.mapa.Mapa;
 import java.util.Scanner;
 
 public class ScreenJuego extends ScreenAdapter {
@@ -22,13 +16,13 @@ public class ScreenJuego extends ScreenAdapter {
     private final Stage stage;
     private final Juego juego;
 
-    public ScreenJuego(GuerraAeronaves guerraAeronaves) {
-        
-        stage = new Stage();
+    public ScreenJuego(GuerraAeronaves guerraAeronaves) {       
+        stage = new Stage(new FitViewport(GuerraAeronaves.getAnchoVentana()
+                , GuerraAeronaves.getAltoVentana()));
         juego = new Juego(stage, leerMapa());
         juego.iniciar();
         Gdx.input.setInputProcessor(stage);
-    }
+    }  
     
     @Override
     public void render(float delta) {

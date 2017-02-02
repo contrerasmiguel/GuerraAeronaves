@@ -38,8 +38,8 @@ public class ScreenEditorNuevo extends ScreenAdapter {
     @Override
     public void hide() {
         super.hide();
-        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentanaEditor()
-                , GuerraAeronaves.getAltoVentanaEditor());          
+        Gdx.graphics.setWindowedMode(GuerraAeronaves.getAnchoVentana()
+                , GuerraAeronaves.getAltoVentana());          
     }
 
     @Override
