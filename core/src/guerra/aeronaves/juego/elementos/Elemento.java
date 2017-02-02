@@ -41,8 +41,10 @@ public abstract class Elemento extends Image {
                 if (!rutaExplosiones.isEmpty()) {
                     setDrawable(new SpriteDrawable(new Sprite(new Texture(
                             Gdx.files.internal(rutaExplosiones.pop())))));
+                    setZIndex(GuerraAeronaves.INDICE_ALTO);
                 }
                 else {
+                    setZIndex(GuerraAeronaves.INDICE_INTERMEDIO);
                     setVisible(false);
                     setDrawable(spriteInicial);
                 }

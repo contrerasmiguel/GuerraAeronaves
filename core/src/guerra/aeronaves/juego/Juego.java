@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.GuerraAeronaves;
+import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
 import guerra.aeronaves.juego.elementos.EstacionGasolinaAzul;
@@ -28,11 +29,8 @@ import guerra.aeronaves.juego.elementos.PickupVida;
 import guerra.aeronaves.juego.elementos.PowerupMunicion;
 import guerra.aeronaves.juego.elementos.PowerupVida;
 import java.util.ArrayList;
-import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.toList;
 
 public class Juego extends Task {
     
@@ -72,51 +70,15 @@ public class Juego extends Task {
 
     @Override
     public void run() {
-        if (avionAzul != null && !avionAzul.isDestruido()) {
-            
-        }
-        
-        if (avionRojo != null && !avionRojo.isDestruido()) {
-            if(Gdx.input.isKeyPressed(Keys.UP))
-                avionRojo.cambiarDireccion(Direccion.ARRIBA);
-            
-            else if(Gdx.input.isKeyPressed(Keys.DOWN))
-                avionRojo.cambiarDireccion(Direccion.ABAJO);
-            
-            else if(Gdx.input.isKeyPressed(Keys.LEFT))
-                avionRojo.cambiarDireccion(Direccion.IZQUIERDA);
-            
-            else if(Gdx.input.isKeyPressed(Keys.RIGHT))
-                avionRojo.cambiarDireccion(Direccion.DERECHA);
-            
-            if (estaCentroCasilla(avionRojo)) {
-                avionRojo.actualizarDireccion();
-            }
-            
-            if (colisiono(avionRojo)) {
-                avionRojo.setDestruido(true);
-                avionRojo.crearExplosion(GuerraAeronaves.TIEMPO_EXPLOSION);
-                
-                new Timer().scheduleTask(new Task() {
-                    @Override
-                    public void run() {
-                        avionRojo.colocarEnPosicionInicial();
-                        avionRojo.setDestruido(false);
-                        avionRojo.setVisible(true);
-                    }
-                }, GuerraAeronaves.TIEMPO_REAPARICION, 0, 0);                
-            }
-            else {
-                avionRojo.mover();
-            }
-        }
+        actualizarAvion(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
+        actualizarAvion(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
     }
       
-    private boolean estaCentroCasilla(AvionRojo avior) {
+    private boolean estaCentroCasilla(Elemento e) {
         ArrayList<Vector2> centros = centroCasillas;
         
         for (Vector2 centro : centros) {
-            if(estaEnElCentro(avior.getX(), avior.getY(), centro)) {
+            if(estaEnElCentro(e.getX(), e.getY(), centro)) {
                 return true;
             }
         }
@@ -141,19 +103,19 @@ public class Juego extends Task {
     
     // Determinar si el elemento colisión con otro elemento o con el borde del 
     // mapa
-    private boolean colisiono(AvionRojo a) {       
+    private boolean colisiono(Elemento e) {       
         // Determinar si colisionó con el borde del mapa
-        if (a.getX() < 0 || a.getX() > stage.getWidth() - GuerraAeronaves
+        if (e.getX() < 0 || e.getX() > stage.getWidth() - GuerraAeronaves
                 .calcularTamañoCasilla(stage.getWidth(), stage.getHeight())
-                || a.getY() < 0 || a.getY() > stage.getHeight() 
+                || e.getY() < 0 || e.getY() > stage.getHeight() 
                 - GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight())) {
             return true;
         }
         
         // Determinar si colisionó con otro objeto sólido 
         else {
-            for (Elemento e : elementosColisionables) {
-                if (a != e && a.getX() == e.getX() && a.getY() == e.getY()) {
+            for (Elemento ec : elementosColisionables) {
+                if (e != ec && e.getX() == ec.getX() && e.getY() == ec.getY()) {
                     return true;
                 }
             }          
@@ -179,12 +141,25 @@ public class Juego extends Task {
                     if (e instanceof Nube) {
                         e.setZIndex(GuerraAeronaves.INDICE_ALTO);
                     }
-                    else {
+                    else if (e instanceof Avion) {
+                        e.setZIndex(GuerraAeronaves.INDICE_INTERMEDIO);
+                    }
+                    else if (e instanceof PowerupMunicion || e instanceof PowerupVida
+                            || e instanceof PickupGasolina || e instanceof PickupMunicion
+                            || e instanceof PickupVida || e instanceof Edificio
+                            || e instanceof Montana) {
                         e.setZIndex(GuerraAeronaves.INDICE_MEDIO);
+                    }
+                    else {
+                        e.setZIndex(GuerraAeronaves.INDICE_FONDO);
                     }
                     elementosMapa.add(e);                    
                 }
             }
+        }
+        
+        for (Elemento e : elementosMapa) {
+            System.out.println("z-index=" + e.getZIndex());
         }
         
         return elementosMapa;
@@ -256,7 +231,8 @@ public class Juego extends Task {
             public boolean test(Elemento e) {
                 return e instanceof AvionAzul;
             }
-        }).findFirst().orElseGet(new Supplier<Elemento>() {
+        })
+        .findFirst().orElseGet(new Supplier<Elemento>() {
             @Override
             public Elemento get() {
                 return null;
@@ -292,6 +268,44 @@ public class Juego extends Task {
         }
         
         return ec;
+    }
+
+    private void actualizarAvion(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
+            , int TECLA_IZQUIERDA, int TECLA_DERECHA, int TECLA_DISPARAR) {
+        if (avion != null && !avion.isDestruido()) {
+            if(Gdx.input.isKeyPressed(TECLA_ARRIBA))
+                avion.cambiarDireccion(Direccion.ARRIBA);
+            
+            else if(Gdx.input.isKeyPressed(TECLA_ABAJO))
+                avion.cambiarDireccion(Direccion.ABAJO);
+            
+            else if(Gdx.input.isKeyPressed(TECLA_IZQUIERDA))
+                avion.cambiarDireccion(Direccion.IZQUIERDA);
+            
+            else if(Gdx.input.isKeyPressed(TECLA_DERECHA))
+                avion.cambiarDireccion(Direccion.DERECHA);
+            
+            if (estaCentroCasilla(avion)) {
+                avion.actualizarDireccion();
+            }
+            
+            if (colisiono(avion)) {
+                avion.setDestruido(true);
+                avion.crearExplosion(GuerraAeronaves.TIEMPO_EXPLOSION);
+                
+                new Timer().scheduleTask(new Task() {
+                    @Override
+                    public void run() {
+                        avion.colocarEnPosicionInicial();
+                        avion.setDestruido(false);
+                        avion.setVisible(true);
+                    }
+                }, GuerraAeronaves.TIEMPO_REAPARICION, 0, 0);                
+            }
+            else {
+                avion.mover();
+            }
+        }
     }
 
 }
