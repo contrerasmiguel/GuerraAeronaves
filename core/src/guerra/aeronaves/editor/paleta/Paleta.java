@@ -1,5 +1,6 @@
 package guerra.aeronaves.editor.paleta;
 
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,8 +14,10 @@ public class Paleta extends Table {
     private final ClickListenerBotonLimpiar clickListenerBotonLimpiar;
     private final ClickListenerBotonGuardar clickListenerBotonGuardar;
     private final ClickListenerBotonGirar clickListenerBotonGirar;
+    private final Stage stage;
     
-    public Paleta() { 
+    public Paleta(Stage stage) {
+        this.stage = stage;
         clickListenerElementoPaleta = new ClickListenerElementoPaleta();
         clickListenerBotonLimpiar = new ClickListenerBotonLimpiar();
         clickListenerBotonGuardar = new ClickListenerBotonGuardar();
@@ -70,21 +73,21 @@ public class Paleta extends Table {
             , String rutaTexturaMapa, int id) {
         ImageButton ib = new ElementoNoRotatorio(rutaTexturaPaleta, rutaTexturaMapa, id);
         ib.addListener(clickListenerElementoPaleta);
-        add(ib).size(GuerraAeronaves.TAMANO_CASILLA_EDITOR);
+        add(ib).size(GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight()));
     }
     
     private void agregarElementoRotatorio(String rutaTexturaPaleta
             , String rutaTexturaMapa, int id) {
         ImageButton ib = new ElementoRotatorio(rutaTexturaPaleta, rutaTexturaMapa, id);
         ib.addListener(clickListenerElementoPaleta);
-        add(ib).size(GuerraAeronaves.TAMANO_CASILLA_EDITOR);
+        add(ib).size(GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight()));
     }
     
     private void agregarBoton(String rutaTextura, ClickListener clickListenerBoton) {
         ImageButton ib = new BotonPaleta(rutaTextura);
         ib.addListener(clickListenerBoton);
-        add(ib).size(GuerraAeronaves.TAMANO_CASILLA_EDITOR * 2, GuerraAeronaves
-                .TAMANO_CASILLA_EDITOR).colspan(2);
+        add(ib).size(GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight()) * 2
+                , GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight())).colspan(2);
     }
 
     public ClickListenerElementoPaleta getClickListenerElementoPaleta() {

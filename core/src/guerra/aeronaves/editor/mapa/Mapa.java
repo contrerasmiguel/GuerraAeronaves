@@ -1,6 +1,7 @@
 package guerra.aeronaves.editor.mapa;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -12,9 +13,11 @@ import guerra.aeronaves.editor.paleta.Paleta;
 public class Mapa extends Table {
     
     private final ClickListenerCasillaMapa clickListenerCasillaMapa;
-    private Paleta pal;
+    private final Paleta pal;    
+    private final Stage stage;
     
-    public Mapa(Paleta paleta) {
+    public Mapa(Paleta paleta, Stage stage) {
+        this.stage = stage;
         this.clickListenerCasillaMapa = new ClickListenerCasillaMapa(paleta);
         setDebug(true);
         setTouchable(Touchable.enabled);
@@ -23,27 +26,11 @@ public class Mapa extends Table {
             for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS; ++columnas) {
                 ImageButton ib = new ElementoNoRotatorio("cielo1.png", GuerraAeronaves.ID_CIELO);
                 ib.addListener(clickListenerCasillaMapa);
-                add(ib).size(GuerraAeronaves.TAMANO_CASILLA_EDITOR);
+                add(ib).size(GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight()));
             }
         }
         pal = paleta;
         pal.setClickPaletaListener(this);
-    }
-    
-    public Mapa() {
-        this.clickListenerCasillaMapa = new ClickListenerCasillaMapa();
-        dibujarCielo();
-    }
-
-    private void dibujarCielo() {
-        setTouchable(Touchable.disabled);
-        for (int filas = 0; filas < GuerraAeronaves.NUM_FILAS; ++filas) {
-            row();
-            for (int columnas = 0; columnas < GuerraAeronaves.NUM_COLUMNAS; ++columnas) {
-                ImageButton ib = new ElementoNoRotatorio("cielo1.png", GuerraAeronaves.ID_CIELO);
-                add(ib).size(GuerraAeronaves.TAMANO_CASILLA);
-            }
-        }
     }
     
     public class ClickListenerCasillaMapa extends ClickListener {

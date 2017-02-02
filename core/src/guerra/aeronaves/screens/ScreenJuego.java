@@ -7,7 +7,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import guerra.aeronaves.GuerraAeronaves;
 import java.util.Scanner;
 
@@ -16,9 +15,12 @@ public class ScreenJuego extends ScreenAdapter {
     private final Stage stage;
     private final Juego juego;
 
-    public ScreenJuego(GuerraAeronaves guerraAeronaves) {       
-        stage = new Stage(new FitViewport(GuerraAeronaves.getAnchoVentana()
-                , GuerraAeronaves.getAltoVentana()));
+    public ScreenJuego(GuerraAeronaves guerraAeronaves) {
+        stage = new Stage(new FitViewport(GuerraAeronaves.calcularTamañoCasilla(Gdx
+                .graphics.getWidth(), Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_COLUMNAS
+                , GuerraAeronaves.calcularTamañoCasilla(Gdx.graphics.getWidth()
+                        , Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_FILAS));
+        
         juego = new Juego(stage, leerMapa());
         juego.iniciar();
         Gdx.input.setInputProcessor(stage);

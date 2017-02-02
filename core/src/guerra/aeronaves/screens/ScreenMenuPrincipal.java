@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import guerra.aeronaves.GuerraAeronaves;
 
 public class ScreenMenuPrincipal extends ScreenMenu {
-      
+    
     public ScreenMenuPrincipal(GuerraAeronaves guerraAeronaves) {
         ImageButton btnJugar = agregarBoton("boton_jugar.png");
         btnJugar.setY(220);

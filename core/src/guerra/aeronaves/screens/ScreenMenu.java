@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import guerra.aeronaves.GuerraAeronaves;
 
 public abstract class ScreenMenu extends ScreenAdapter {
@@ -20,7 +21,7 @@ public abstract class ScreenMenu extends ScreenAdapter {
         imgFondo.setPosition(0, 0);
         imgFondo.setZIndex(0);        
         
-        stage = new Stage();
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         stage.addActor(imgFondo);
         
         Gdx.input.setInputProcessor(stage);
@@ -38,8 +39,7 @@ public abstract class ScreenMenu extends ScreenAdapter {
                 new Texture(Gdx
                 .files.internal(rutaTextura)))));
         ib.setSize(GuerraAeronaves.ANCHO_BOTON, GuerraAeronaves.ALTURA_BOTON);
-        ib.setX(GuerraAeronaves.getAnchoVentana()/2 - GuerraAeronaves
-                .ANCHO_BOTON/2);
+        ib.setX(stage.getWidth()/2 - GuerraAeronaves.ANCHO_BOTON/2);
         ib.setZIndex(1);
         stage.addActor(ib);
         return ib;

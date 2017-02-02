@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import guerra.aeronaves.screens.*;
 import java.util.Arrays;
 import java.util.List;
@@ -19,8 +20,6 @@ public class GuerraAeronaves extends Game {
     public static final float TIEMPO_RELOJ = 0.01f;
     public static final int ALTURA_BOTON = 82;
     public static final int ANCHO_BOTON = 284;
-    public static final int TAMANO_CASILLA = 46;
-    public static final int TAMANO_CASILLA_EDITOR = 46;
     public static final int NUM_COLUMNAS = 19;
     public static final int NUM_FILAS = 14;
     public static final int NUM_COLUMNAS_PALETA = 2;
@@ -137,12 +136,24 @@ public class GuerraAeronaves extends Game {
         }
     }
     
-    public static final int getAnchoVentana() {
-        return NUM_COLUMNAS * TAMANO_CASILLA;
+    // Devuelve el tamaño que debe tener una casilla del juego
+    public static final float calcularTamañoCasilla(float ancho, float alto) {
+        float tamañoSegunColumnas = (float)Math.floor(ancho / NUM_COLUMNAS);
+        float tamañoSegunFilas = (float)Math.floor(alto / NUM_FILAS);
+        
+        return (tamañoSegunColumnas < tamañoSegunFilas) 
+                ? tamañoSegunColumnas 
+                : tamañoSegunFilas;
     }
     
-    public static final int getAltoVentana() {
-        return NUM_FILAS * TAMANO_CASILLA;
+    // Devuelve el tamaño que debe tener una casilla del editor de mapas
+    public static final float calcularTamañoCasillaEditor(float ancho, float alto) {       
+        float tamañoSegunColumnas = ancho / getNumColumnasEditor();
+        float tamañoSegunFilas = alto / getNumFilasEditor();
+        
+        return (tamañoSegunColumnas < tamañoSegunFilas) 
+                ? tamañoSegunColumnas 
+                : tamañoSegunFilas;
     }
     
     public static final int getNumColumnasEditor() {
@@ -151,14 +162,6 @@ public class GuerraAeronaves extends Game {
     
     public static final int getNumFilasEditor() {
         return NUM_FILAS;
-    }
-    
-    public static final int getAnchoVentanaEditor() {
-        return getNumColumnasEditor() * TAMANO_CASILLA_EDITOR;
-    }
-    
-    public static final int getAltoVentanaEditor() {
-        return getNumFilasEditor() * TAMANO_CASILLA_EDITOR + 1;
-    }    
+    }  
     
 }

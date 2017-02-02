@@ -10,8 +10,8 @@ public class DesktopLauncher {
             LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
             config.title = "Guerra de Aeronaves";
             config.foregroundFPS = 60;
-            config.height = GuerraAeronaves.getAltoVentana();
-            config.width = GuerraAeronaves.getAnchoVentana();
+            config.height = 644;
+            config.width = 874;
             config.resizable = false;
             config.addIcon("icon.png", Files.FileType.Internal);
             new LwjglApplication(new GuerraAeronaves(), config);
