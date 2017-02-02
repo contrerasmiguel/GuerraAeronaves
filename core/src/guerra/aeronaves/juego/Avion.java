@@ -1,22 +1,25 @@
 package guerra.aeronaves.juego;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import guerra.aeronaves.Direccion;
 
-public class Avion extends Image{
+public class Avion extends Image {
+    
+    int id;
     Direccion dir;
     Direccion proxDir;
     
-    public Avion(Drawable d, Direccion dir) {
+    public Avion(Drawable d, int id, Direccion dir) {
         super(d);
+        this.id = id;
         this.dir = dir;
-        proxDir = dir;
+        proxDir = this.dir;
     }
 
     public void actualizar() {
         setOrigin(getWidth()/2, getHeight()/2);
+        
         switch (dir) {
             case ARRIBA:
                 setPosition(getX(),getY()+1);
@@ -51,4 +54,9 @@ public class Avion extends Image{
     public Direccion obtenerDireccion() {
         return dir;
     }
+
+    public int getId() {
+        return id;
+    }
+    
 }
