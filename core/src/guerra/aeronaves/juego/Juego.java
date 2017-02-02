@@ -178,8 +178,9 @@ public class Juego extends Task {
                 if (e != null) {
                     if (e instanceof Nube) {
                         e.setZIndex(GuerraAeronaves.INDICE_ALTO);
-                    }
-                    else {
+                    } else if(e instanceof AvionAzul || e instanceof AvionRojo) {
+                        e.setZIndex(GuerraAeronaves.INDICE_INTERMEDIO);
+                    } else {
                         e.setZIndex(GuerraAeronaves.INDICE_MEDIO);
                     }
                     elementosMapa.add(e);                    

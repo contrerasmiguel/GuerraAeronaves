@@ -24,9 +24,11 @@ public class GuerraAeronaves extends Game {
     public static final int NUM_FILAS = 14;
     public static final int NUM_COLUMNAS_PALETA = 2;
     public static final int NUM_FILAS_PALETA = NUM_FILAS;
+    
     public static final int INDICE_FONDO = 0;
     public static final int INDICE_MEDIO = 1;
-    public static final int INDICE_ALTO = 2;
+    public static final int INDICE_INTERMEDIO = 2;
+    public static final int INDICE_ALTO = 3;
     
     public static final int GASOLINA_INICIAL = 100;
     public static final int MUNICION_INICIAL = 5;
