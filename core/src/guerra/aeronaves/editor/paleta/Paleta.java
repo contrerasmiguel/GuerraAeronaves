@@ -50,7 +50,7 @@ public class Paleta extends Table {
         row();
         // Por ahora, el powerup de munición tiene el mismo sprite que el pickup de munición
         // TO-DO: crear sprite de powerup de munición.
-        agregarElementoNoRotatorio("paleta/pickup_municiond.png", "municion.png"
+        agregarElementoNoRotatorio("paleta/powerup_municiond.png", "powerup_municion.png"
                 , GuerraAeronaves.ID_POWERUP_MUNICION);
         agregarElementoNoRotatorio("paleta/pickup_municiond.png", "municion.png"
                 , GuerraAeronaves.ID_PICKUP_MUNICION);

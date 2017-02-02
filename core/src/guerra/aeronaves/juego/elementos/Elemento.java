@@ -1,6 +1,7 @@
 package guerra.aeronaves.juego.elementos;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -15,12 +16,14 @@ public abstract class Elemento extends Image {
     
     protected final int id;
     protected Vector2 posInicial;
+    private final Sound expl;
     
     public Elemento(String rutaSprite, int id, Vector2 posInicial) {
         super(new SpriteDrawable(new Sprite(new Texture(Gdx.files
                 .internal(rutaSprite)))));
         this.id = id;
         this.posInicial = posInicial;
+        expl = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
     }
 
     public int getId() {
@@ -34,6 +37,8 @@ public abstract class Elemento extends Image {
         final ArrayDeque<String> rutaExplosiones = new ArrayDeque<String>(
                 GuerraAeronaves.RUTA_EXPLOSIONES);
         final Drawable spriteInicial = getDrawable();
+        expl.play(0.2f);
+        
         
         new Timer().scheduleTask(new Timer.Task() {
             @Override
