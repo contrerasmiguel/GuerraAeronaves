@@ -138,6 +138,7 @@ public class Juego extends Task {
                         .get(indiceArregloCentros).x, centroCasillas.get(indiceArregloCentros).y));
                 
                 if (e != null) {
+                    /*
                     if (e instanceof Nube) {
                         e.setZIndex(GuerraAeronaves.INDICE_ALTO);
                     }
@@ -152,16 +153,16 @@ public class Juego extends Task {
                     }
                     else {
                         e.setZIndex(GuerraAeronaves.INDICE_FONDO);
-                    }
+                    } */
                     elementosMapa.add(e);                    
                 }
             }
         }
-        
+        /*
         for (Elemento e : elementosMapa) {
             System.out.println("z-index=" + e.getZIndex());
         }
-        
+        */
         return elementosMapa;
     }
 
@@ -218,8 +219,28 @@ public class Juego extends Task {
     // Agrega todos los elemento de un arreglo de elementos a un stage, tomando 
     // en cuenta que un elemento es un actor.
     private void agregarElementos(Stage stage, ArrayList<Elemento> elementos) {
-        for (Elemento e : elementos) {
+        /*for (Elemento e : elementos) {
             stage.addActor(e);
+        }*/
+        for (int i=0;i<elementos.size();i++) {
+            if(elementos.get(i) instanceof Edificio || elementos.get(i) instanceof Montana 
+                    || elementos.get(i) instanceof EstacionGasolinaAzul || elementos.get(i) instanceof EstacionGasolinaRojo
+                    || elementos.get(i) instanceof EstacionMunicionAzul || elementos.get(i) instanceof EstacionMunicionRojo
+                    || elementos.get(i) instanceof PickupMunicion || elementos.get(i) instanceof PickupVida
+                    || elementos.get(i) instanceof PickupGasolina || elementos.get(i) instanceof PowerupVida
+                    || elementos.get(i) instanceof PowerupMunicion) {
+                stage.addActor(elementos.get(i));
+            }
+        }
+        for (int i=0;i<elementos.size();i++) {
+            if(elementos.get(i) instanceof AvionAzul || elementos.get(i) instanceof AvionRojo) {
+                stage.addActor(elementos.get(i));
+            }
+        }
+        for (int i=0;i<elementos.size();i++) {
+            if(elementos.get(i) instanceof Nube) {
+                stage.addActor(elementos.get(i));
+            }
         }
     }
 
