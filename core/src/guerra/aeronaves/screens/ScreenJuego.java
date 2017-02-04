@@ -5,15 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import guerra.aeronaves.GuerraAeronaves;
+import guerra.aeronaves.juego.JuegoListener;
 import java.util.Scanner;
 
-public class ScreenJuego extends ScreenAdapter {
+public class ScreenJuego extends ScreenAdapter implements JuegoListener {
     
     private final Stage stage;
-    private final Juego juego;
+    private Juego juego;
 
     public ScreenJuego(GuerraAeronaves guerraAeronaves) {
         stage = new Stage(new FitViewport(GuerraAeronaves.calcularTamañoCasilla(Gdx
@@ -21,8 +21,7 @@ public class ScreenJuego extends ScreenAdapter {
                 , GuerraAeronaves.calcularTamañoCasilla(Gdx.graphics.getWidth()
                         , Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_FILAS));
         
-        juego = new Juego(stage, leerMapa());
-        juego.iniciar();
+        crearJuego();
         Gdx.input.setInputProcessor(stage);
     }  
     
@@ -38,10 +37,6 @@ public class ScreenJuego extends ScreenAdapter {
         super.dispose();
         stage.dispose();
     }
-
-    private void crearElementos(int matriz[][], Table tablita) {
-        
-    }
     
     private int[][] leerMapa() {
         int matrizMapa[][] = new int[GuerraAeronaves.NUM_FILAS][GuerraAeronaves.NUM_COLUMNAS];
@@ -56,6 +51,19 @@ public class ScreenJuego extends ScreenAdapter {
             }
         }
         return matrizMapa;
+    }
+
+    @Override
+    public void alTerminarJuego() {
+        // CÓDIGO DE PRUEBA
+        crearJuego();
+        // FIN DE CÓDIGO DE PRUEBA
+    }
+    
+    private void crearJuego() {
+        juego = new Juego(stage, leerMapa());
+        juego.setJuegoListener(this);
+        juego.iniciar();        
     }
     
 }

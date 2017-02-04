@@ -6,18 +6,12 @@ import guerra.aeronaves.GuerraAeronaves;
 public class PowerupMunicion extends Elemento {
     
     public PowerupMunicion(Vector2 posInicial) {
-        super("municion.png", GuerraAeronaves.ID_POWERUP_MUNICION, posInicial);
-        colocarEnPosicionInicial();
+        super("municion.png", GuerraAeronaves.ID_POWERUP_MUNICION, posInicial, GuerraAeronaves.VIDA_INFINITA);
     }
     
     @Override
     public final void colocarEnPosicionInicial() {
         super.colocarEnPosicionInicial();
-    }
-    
-    @Override
-    public boolean esColisionable() {
-        return false;
     }
 
 }

@@ -29,10 +29,6 @@ public class GuerraAeronaves extends Game {
     public static final int INDICE_INTERMEDIO = 2;
     public static final int INDICE_ALTO = 3;
     
-    public static final int GASOLINA_INICIAL = 100;
-    public static final int MUNICION_INICIAL = 5;
-    public static final int VIDA_INICIAL = 3;
-    
     // Tiempo que hay entre la explosión de una aeronave y la restauración de 
     // la misma.
     public static final int TIEMPO_REAPARICION = 2;
@@ -71,6 +67,20 @@ public class GuerraAeronaves extends Game {
             , "explosion4.png"
             , "explosion5.png"
             , "explosion6.png");
+    
+    public static final float 
+              VIDA_AVION                = 3
+            , VIDA_ESTACION_MUNICION    = 6
+            , VIDA_ESTACION_GASOLINA    = 6
+            , VIDA_EDIFICIO             = 9
+            , VIDA_INFINITA             = Float.POSITIVE_INFINITY
+            , VIDA_PROYECTIL            = 1;
+    
+    public static final int 
+              MUNICION_INICIAL_AVION = 64;
+    
+    public static final int 
+              GASOLINA_INICIAL_AVION = 100;
     
     @Override
     public void create () {

@@ -6,18 +6,12 @@ import guerra.aeronaves.GuerraAeronaves;
 public class Edificio extends Elemento {  
     
     public Edificio(Vector2 posInicial) {
-        super("edificio.png", GuerraAeronaves.ID_EDIFICIO, posInicial);
-        colocarEnPosicionInicial();
+        super("edificio.png", GuerraAeronaves.ID_EDIFICIO, posInicial, GuerraAeronaves.VIDA_EDIFICIO);
     }
     
     @Override
     public final void colocarEnPosicionInicial() {
         super.colocarEnPosicionInicial();
-    }
-    
-    @Override
-    public boolean esColisionable() {
-        return true;
-    }    
+    }   
     
 }
