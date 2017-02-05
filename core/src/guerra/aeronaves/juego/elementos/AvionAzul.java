@@ -5,8 +5,8 @@ import guerra.aeronaves.Direccion;
 
 public class AvionAzul extends Avion {
     
-    public AvionAzul(Vector2 posInicial, Direccion dir) {
-        super("avion_azul.png", posInicial, dir);
+    public AvionAzul(Vector2 posInicial, Direccion direccion) {
+        super("avion_azul.png", posInicial, direccion);
     }
 
 }

@@ -17,7 +17,8 @@ public class GuerraAeronaves extends Game {
     private Music music_menu, music_edicion, music_juego;
     
     public static final float 
-              TIEMPO_ACTUALIZACION_JUEGO = 0.003f
+              TIEMPO_DETECCION_TECLAS = 0.250f
+            , TIEMPO_SINCRONIZACION = 0.500f
             , VIDA_AVION = 3
             , VIDA_ESTACION_MUNICION = 6
             , VIDA_ESTACION_GASOLINA = 6
@@ -25,7 +26,7 @@ public class GuerraAeronaves extends Game {
             , VIDA_INFINITA = Float.POSITIVE_INFINITY
             , VIDA_PROYECTIL = 1
             , CANTIDAD_PICKUP_VIDA = VIDA_AVION / 3
-            , TIEMPO_EXPLOSION = 0.5f;    
+            , TIEMPO_EXPLOSION = 0.5f;
     
     public static final int
               ALTURA_BOTON = 82
@@ -33,8 +34,7 @@ public class GuerraAeronaves extends Game {
             , NUM_COLUMNAS = 19
             , NUM_FILAS = 14
             , NUM_COLUMNAS_PALETA = 2
-            , NUM_FILAS_PALETA = NUM_FILAS            
-            , MIN_TICKS_ACTUALIZACION_AVION = 3
+            , NUM_FILAS_PALETA = NUM_FILAS
             , TIEMPO_FINALIZACION = 2
             , ID_CIELO = 0
             , ID_AVION_ROJO = 4 
@@ -54,7 +54,7 @@ public class GuerraAeronaves extends Game {
             , ID_ESTACION_MUNICIONES_AZUL = 70
             , ID_EXPLOSION = 71
             , MUNICIONES_AVION = 64
-            , GASOLINA_AVION = (int)Math.ceil(15 / (MIN_TICKS_ACTUALIZACION_AVION * TIEMPO_ACTUALIZACION_JUEGO))
+            , GASOLINA_AVION = (int)Math.round(15 / TIEMPO_SINCRONIZACION)
             , CANTIDAD_PICKUP_GASOLINA = GASOLINA_AVION / 3
             , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3;            
     

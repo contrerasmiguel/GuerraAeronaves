@@ -42,7 +42,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 
-public class Juego extends Task {
+public class Juego {
     
     private final Stage stage;
     private final List<Elemento> elementos;
@@ -56,8 +56,6 @@ public class Juego extends Task {
     private JuegoListener juegoListener;
     
     private final Timer timer;
-    
-    private int ticksActualizacionAvion;
     
     public Juego(Stage stage, int matrizMapa[][]) {
         this.stage = stage;
@@ -74,59 +72,31 @@ public class Juego extends Task {
         agregarElementos(stage, elementos);
         stage.addActor(fondo);
         timer = new Timer();
-        ticksActualizacionAvion = 0;
     }
     
     // Inicia el reloj del juego.
     public void iniciar() {
-        timer.scheduleTask(this, 0, GuerraAeronaves.TIEMPO_ACTUALIZACION_JUEGO);
-    }
-
-    // Reloj (se ejecuta cada GuerraAeronaves.TIEMPO_RELOJ)
-    @Override
-    public void run() {
-        
-        if (ticksActualizacionAvion >= GuerraAeronaves.MIN_TICKS_ACTUALIZACION_AVION) {
-            actualizarAviones();
-        }
-        
-        List<Elemento> elementosSinAviones = (List<Elemento>)elementos.stream().filter(new Predicate() {
+        timer.scheduleTask(new Task() {
             @Override
-            public boolean test(Object t) {
-                Elemento e = (Elemento)t;
-                return e != avionAzul && e != avionRojo;
+            public void run() {
+                detectarTeclas(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
+                detectarTeclas(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
             }
-        }).collect(toList());
-        actualizarElementosNoControlables(elementosSinAviones);   
-        detectarColisiones(elementos);
+        }, 0, GuerraAeronaves.TIEMPO_DETECCION_TECLAS);
         
-        // Elimina todos los elementos que fueron destruidos
-        procesarElementosAQuitar();
-        
-        ticksActualizacionAvion = (ticksActualizacionAvion >= GuerraAeronaves
-                .MIN_TICKS_ACTUALIZACION_AVION) 
-                ? 0 
-                : ticksActualizacionAvion + 1;
-    }
-    
-    // Se ejecuta cada tres ticks
-    public void actualizarAviones() {
-        actualizarMovimientoAvion(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
-        actualizarMovimientoAvion(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);        
-    }
-    
-    // Determina si un elemento está centrado en una casilla.
-    private boolean estaCentroCasilla(Elemento e) {
-        List<Vector2> centros = centroCasillas;
-        
-        for (Vector2 centro : centros) {
-            if(estaEnElCentro(e.getX(), e.getY(), centro)) {
-                return true;
-            }
-        }
-        return false;
-    }
+        timer.scheduleTask(new Task() {
+            @Override
+            public void run() {
+                List<Elemento> elementosSinAviones = obtenerElementosSinAviones(elementos);
+                actualizarElementosNoControlables(elementosSinAviones);   
+                detectarColisiones(elementos);
 
+                // Elimina todos los elementos que fueron destruidos
+                procesarElementosAQuitar();
+            }
+        }, 0, GuerraAeronaves.TIEMPO_SINCRONIZACION);
+    }
+   
     // Devuelve un arreglo con todos los centros de las casillas del mapa
     private ArrayList<Vector2> obtenerCentroCasillas() {
         ArrayList<Vector2> centros = new ArrayList<Vector2>();
@@ -138,13 +108,6 @@ public class Juego extends Task {
             }
         }
         return centros;
-    }
-    
-    // Función auxiliar que determina si un punto (posiblemente correspondiente 
-    // a la posición de un elemento) está posicionado en la esquina superior 
-    // izquierda de una casilla.
-    private boolean estaEnElCentro(float x, float y, Vector2 centro) {
-        return centro.x == x && centro.y == y;
     }
     
     private boolean colisionoConPared(Elemento e) {
@@ -179,7 +142,7 @@ public class Juego extends Task {
                         .get(indiceArregloCentros).x, centroCasillas.get(indiceArregloCentros).y));
                                
                 if (e != null) {
-                    e.colocarEnPosicionInicial();
+                    e.setPosicion(e.getPosicion());
                     elementosMapa.add(e);                  
                 }
             }
@@ -216,7 +179,7 @@ public class Juego extends Task {
                 return new Montana(posInicial);
                 
             case GuerraAeronaves.ID_NUBE:
-                return new Nube(posInicial);
+                return new Nube(posInicial, Direccion.DERECHA);
                 
             case GuerraAeronaves.ID_PICKUP_GASOLINA:
                 return new PickupGasolina(posInicial);
@@ -299,50 +262,40 @@ public class Juego extends Task {
 
     // Actualiza las propiedades del avión en función de las teclas que 
     // presionó el usuario y el estado actual del juego.
-    private void actualizarMovimientoAvion(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
+    private void detectarTeclas(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
             , int TECLA_IZQUIERDA, int TECLA_DERECHA, int TECLA_DISPARAR) {
         if (avion != null && avion.getVida() > 0) {
-            if(Gdx.input.isKeyPressed(TECLA_ARRIBA))
+            if(Gdx.input.isKeyPressed(TECLA_ARRIBA)) {
                 actualizarDireccionAvion(avion, Direccion.ARRIBA);
+            }
             
-            else if(Gdx.input.isKeyPressed(TECLA_ABAJO))
+            else if(Gdx.input.isKeyPressed(TECLA_ABAJO)) {
                 actualizarDireccionAvion(avion, Direccion.ABAJO);
+            }
             
-            else if(Gdx.input.isKeyPressed(TECLA_IZQUIERDA))
+            else if(Gdx.input.isKeyPressed(TECLA_IZQUIERDA)) {
                 actualizarDireccionAvion(avion, Direccion.IZQUIERDA);
+            }
             
-            else if(Gdx.input.isKeyPressed(TECLA_DERECHA))
+            else if(Gdx.input.isKeyPressed(TECLA_DERECHA)) {
                 actualizarDireccionAvion(avion, Direccion.DERECHA);
+            }
             
             if (Gdx.input.isKeyJustPressed(TECLA_DISPARAR)) {
                 Proyectil p = new Proyectil(avion.getDireccion(), new Vector2(
                         avion.getX(), avion.getY()));
                 disparoAvion(avion, p);                
             }
-            
-            if (estaCentroCasilla(avion)) {
-                avion.setDireccion(avion.getProximaDireccion());
-            }
-            
-            switch (avion.getDireccion()) {
-                case ARRIBA:
-                    avion.moveBy(0, 1);
-                    break;
-                case DERECHA:
-                    avion.moveBy(1, 0);
-                    break;
-                case ABAJO:
-                    avion.moveBy(0, -1);
-                    break;
-                default:
-                    avion.moveBy(-1, 0);
-            }
-            
-            avion.setGasolina(avion.getGasolina() - 1);
-            
-            if (avion.getGasolina() <= 0) {
-                intentarDestruir(avion, avion.getVida());
-            }
+        }
+    }
+    
+    private void actualizarAvion(Avion avion) {
+        avion.setDireccion(avion.getProximaDireccion());
+
+        avion.setGasolina(avion.getGasolina() - 1);
+
+        if (avion.getGasolina() <= 0) {
+            intentarDestruir(avion, avion.getVida());
         }
     }
     
@@ -366,7 +319,7 @@ public class Juego extends Task {
         final Explosion explosion = new Explosion(rutaExplosiones.pop(), new Vector2(x, y));
         
         stage.addActor(explosion);
-        explosion.colocarEnPosicionInicial();
+        explosion.setPosicion(explosion.getPosicion());
         sonidoExplosion.play(0.2f);
         new Timer().scheduleTask(new Timer.Task() {
             @Override
@@ -490,26 +443,9 @@ public class Juego extends Task {
                 
             }
             else if (e instanceof Proyectil && e.getVida() > 0) {
-                actualizarPosicionProyectil((Proyectil)e);
+                actualizarPosicionElemento((Proyectil)e);
             }
         }
-    }
-    
-    // Mueve el proyectil en función de su dirección.
-    private void actualizarPosicionProyectil(Proyectil p) {
-        switch (p.getDireccion()) {
-            case ARRIBA:
-                p.moveBy(0, 1);
-                break;
-            case DERECHA:
-                p.moveBy(1, 0);
-                break;
-            case ABAJO:
-                p.moveBy(0, -1);
-                break;
-            default:
-                p.moveBy(-1, 0);
-        }        
     }
 
     private void disparoAvion(Avion avion, Proyectil p) {
@@ -517,10 +453,7 @@ public class Juego extends Task {
             avion.setMuniciones(avion.getMuniciones() - 1);
             elementos.add(p);
             stage.addActor(p);
-            p.colocarEnPosicionInicial();
-            
-            // Truquito para colocar proyectil justo delante del avión.
-            actualizarPosicionProyectil(p);         
+            p.setPosicion(avion.getPosicionEnFrente());
         }
     }
 
@@ -577,6 +510,36 @@ public class Juego extends Task {
         else if (e instanceof EstacionMunicionesRojo) {
             a.setMuniciones(a.getMuniciones() + GuerraAeronaves.MUNICIONES_AVION);
         }        
+    }
+    
+    private List<Elemento> obtenerElementosSinAviones(List<Elemento> es) {
+        return (List<Elemento>)es.stream().filter(new Predicate() {
+                @Override
+                public boolean test(Object t) {
+                    Elemento e = (Elemento)t;
+                    return e != avionAzul && e != avionRojo;
+                }
+            }).collect(toList());
+    }
+
+    private void actualizarPosicionElemento(Elemento e) {
+        Direccion d = (e instanceof Avion) 
+                ? ((Avion)e).getDireccion()
+                : (e instanceof Nube) 
+                    ? ((Nube)e).getDireccion() 
+                    : ((Proyectil)e).getDireccion();
+        
+        switch (d) {
+            case ARRIBA:
+                
+                break;
+            case DERECHA:
+                break;
+            case ABAJO:
+                break;
+            default:
+                
+        }
     }
     
 }
