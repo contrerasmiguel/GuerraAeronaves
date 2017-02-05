@@ -10,14 +10,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 public abstract class Elemento extends Image {
     
     protected final int id;
-    protected Vector2 posInicial;
+    protected Vector2 posicionInicial;
     protected float vida;
     
     public Elemento(String rutaSprite, int id, Vector2 posInicial, float vida) {
         super(new SpriteDrawable(new Sprite(new Texture(Gdx.files
                 .internal(rutaSprite)))));
         this.id = id;
-        this.posInicial = posInicial;
+        this.posicionInicial = posInicial;
         this.vida = vida;
     }
 
@@ -26,15 +26,15 @@ public abstract class Elemento extends Image {
     }
     
     public void colocarEnPosicionInicial() {
-        setPosition(posInicial.x, posInicial.y);
+        setPosition(posicionInicial.x, posicionInicial.y);
     }
 
-    public Vector2 getPosInicial() {
-        return posInicial;
+    public Vector2 getPosicionInicial() {
+        return posicionInicial;
     }
 
-    public void setPosInicial(Vector2 posInicial) {
-        this.posInicial = posInicial;
+    public void setPosicionInicial(Vector2 posicionInicial) {
+        this.posicionInicial = posicionInicial;
     }
 
     public float getVida() {

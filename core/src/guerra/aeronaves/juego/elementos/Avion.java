@@ -5,22 +5,24 @@ import guerra.aeronaves.Direccion;
 import guerra.aeronaves.GuerraAeronaves;
 
 public abstract class Avion extends Elemento {
-    private Direccion direccionActual;
+    private Direccion direccion;
     private Direccion proximaDireccion;
     private Direccion direccionInicial;
+    private int municiones;
     
     public Avion(String rutaSprite, Vector2 posInicial, Direccion dir) {
         super(rutaSprite, GuerraAeronaves.ID_AVION_AZUL, posInicial, GuerraAeronaves.VIDA_AVION);
-        this.direccionActual = dir;
-        proximaDireccion = this.direccionActual;
-        direccionInicial = this.direccionActual;
+        this.direccion = dir;
+        proximaDireccion = this.direccion;
+        direccionInicial = this.direccion;
+        municiones = GuerraAeronaves.MUNICION_INICIAL_AVION;
     }
 
     @Override
     public final void colocarEnPosicionInicial() {
-        direccionActual = direccionInicial;
-        proximaDireccion = direccionActual;
-        setDireccion(direccionActual);
+        direccion = direccionInicial;
+        proximaDireccion = direccion;
+        setDireccion(direccion);
         super.colocarEnPosicionInicial();
     }
     
@@ -46,13 +48,13 @@ public abstract class Avion extends Elemento {
     }
     
     public void setDireccion(Direccion d) {
-        direccionActual = d;
+        direccion = d;
         setOrigin(getWidth()/2, getHeight()/2);
-        setRotation(direccionARotacion(direccionActual));
+        setRotation(direccionARotacion(direccion));
     }
     
     public Direccion getDireccion() {
-        return direccionActual;
+        return direccion;
     }
     
     public void setProximaDireccion(Direccion d) {
@@ -62,5 +64,13 @@ public abstract class Avion extends Elemento {
     public Direccion getProximaDireccion() {
         return proximaDireccion;
     }
-    
+
+    public int getMuniciones() {
+        return municiones;
+    }
+
+    public void setMuniciones(int municiones) {
+        this.municiones = municiones;
+    }
+     
 }

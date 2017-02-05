@@ -16,7 +16,7 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    public static final float TIEMPO_RELOJ = 0.01f;
+    public static final float TIEMPO_ACTUALIZACION_JUEGO = 0.003f;
     public static final int ALTURA_BOTON = 82;
     public static final int ANCHO_BOTON = 284;
     public static final int NUM_COLUMNAS = 19;
@@ -35,12 +35,6 @@ public class GuerraAeronaves extends Game {
     
     // Tiempo durante el cual se muestran los sprites de explosión
     public static final float TIEMPO_EXPLOSION = 0.5f;
-    
-    // Pixel por pulso de reloj
-    public static final int VELOCIDAD_AVION = 1;
-    
-    public static final int VELOCIDAD_PROYECTIL = 5;
-
     
     public static final int
               ID_CIELO = 0
