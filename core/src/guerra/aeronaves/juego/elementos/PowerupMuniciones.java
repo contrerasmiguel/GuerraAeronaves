@@ -3,15 +3,15 @@ package guerra.aeronaves.juego.elementos;
 import com.badlogic.gdx.math.Vector2;
 import guerra.aeronaves.GuerraAeronaves;
 
-public class EstacionMunicion extends Elemento {
+public class PowerupMuniciones extends Elemento {
     
-    public EstacionMunicion(String rutaSprite, int idElemento, Vector2 posInicial) {
-        super(rutaSprite, idElemento, posInicial, GuerraAeronaves.VIDA_ESTACION_MUNICION);
+    public PowerupMuniciones(Vector2 posInicial) {
+        super("powerup_municion.png", GuerraAeronaves.ID_POWERUP_MUNICIONES, posInicial, GuerraAeronaves.VIDA_INFINITA);
     }
     
     @Override
     public final void colocarEnPosicionInicial() {
         super.colocarEnPosicionInicial();
-    }    
-    
+    }
+
 }

@@ -9,13 +9,15 @@ public abstract class Avion extends Elemento {
     private Direccion proximaDireccion;
     private Direccion direccionInicial;
     private int municiones;
+    private int gasolina;
     
     public Avion(String rutaSprite, Vector2 posInicial, Direccion dir) {
         super(rutaSprite, GuerraAeronaves.ID_AVION_AZUL, posInicial, GuerraAeronaves.VIDA_AVION);
         this.direccion = dir;
         proximaDireccion = this.direccion;
         direccionInicial = this.direccion;
-        municiones = GuerraAeronaves.MUNICION_INICIAL_AVION;
+        municiones = GuerraAeronaves.MUNICIONES_AVION;
+        gasolina = GuerraAeronaves.GASOLINA_AVION;
     }
 
     @Override
@@ -72,5 +74,13 @@ public abstract class Avion extends Elemento {
     public void setMuniciones(int municiones) {
         this.municiones = municiones;
     }
-     
+
+    public int getGasolina() {
+        return gasolina;
+    }
+
+    public void setGasolina(int gasolina) {
+        this.gasolina = gasolina;
+    }
+    
 }

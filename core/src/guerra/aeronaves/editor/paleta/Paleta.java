@@ -39,21 +39,19 @@ public class Paleta extends Table {
                 , "estacion_gasolina_rojo.png", GuerraAeronaves.ID_ESTACION_GASOLINA_ROJO);
         row();
         agregarElementoNoRotatorio("paleta/est_municion_azuld.png"
-                , "estacion_misiles_azul.png", GuerraAeronaves.ID_ESTACION_MUNICION_AZUL);
+                , "estacion_misiles_azul.png", GuerraAeronaves.ID_ESTACION_MUNICIONES_AZUL);
         agregarElementoNoRotatorio("paleta/est_municion_rojod.png"
-                , "estacion_misiles_rojo.png", GuerraAeronaves.ID_ESTACION_MUNICION_ROJO);
+                , "estacion_misiles_rojo.png", GuerraAeronaves.ID_ESTACION_MUNICIONES_ROJO);
         row();
         agregarElementoNoRotatorio("paleta/pickup_gasolinad.png", "gasolina.png"
                 , GuerraAeronaves.ID_PICKUP_GASOLINA);
         agregarElementoNoRotatorio("paleta/pickup_vidad.png", "reparacion.png"
                 , GuerraAeronaves.ID_PICKUP_VIDA);
         row();
-        // Por ahora, el powerup de munición tiene el mismo sprite que el pickup de munición
-        // TO-DO: crear sprite de powerup de munición.
         agregarElementoNoRotatorio("paleta/powerup_municiond.png", "powerup_municion.png"
-                , GuerraAeronaves.ID_POWERUP_MUNICION);
+                , GuerraAeronaves.ID_POWERUP_MUNICIONES);
         agregarElementoNoRotatorio("paleta/pickup_municiond.png", "municion.png"
-                , GuerraAeronaves.ID_PICKUP_MUNICION);
+                , GuerraAeronaves.ID_PICKUP_MUNICIONES);
         row();
         agregarElementoNoRotatorio("paleta/powerup_vidad.png", "powerup_vida.png"
                 , GuerraAeronaves.ID_POWERUP_VIDA);

@@ -16,28 +16,27 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    public static final float TIEMPO_ACTUALIZACION_JUEGO = 0.003f;
-    public static final int ALTURA_BOTON = 82;
-    public static final int ANCHO_BOTON = 284;
-    public static final int NUM_COLUMNAS = 19;
-    public static final int NUM_FILAS = 14;
-    public static final int NUM_COLUMNAS_PALETA = 2;
-    public static final int NUM_FILAS_PALETA = NUM_FILAS;
-    
-    public static final int INDICE_FONDO = 0;
-    public static final int INDICE_MEDIO = 1;
-    public static final int INDICE_INTERMEDIO = 2;
-    public static final int INDICE_ALTO = 3;
-    
-    // Tiempo que hay entre la explosión de una aeronave y la restauración de 
-    // la misma.
-    public static final int TIEMPO_FINALIZACION = 2;
-    
-    // Tiempo durante el cual se muestran los sprites de explosión
-    public static final float TIEMPO_EXPLOSION = 0.5f;
+    public static final float 
+              TIEMPO_ACTUALIZACION_JUEGO = 0.003f
+            , VIDA_AVION = 3
+            , VIDA_ESTACION_MUNICION = 6
+            , VIDA_ESTACION_GASOLINA = 6
+            , VIDA_EDIFICIO = 9
+            , VIDA_INFINITA = Float.POSITIVE_INFINITY
+            , VIDA_PROYECTIL = 1
+            , CANTIDAD_PICKUP_VIDA = VIDA_AVION / 3
+            , TIEMPO_EXPLOSION = 0.5f;    
     
     public static final int
-              ID_CIELO = 0
+              ALTURA_BOTON = 82
+            , ANCHO_BOTON = 284
+            , NUM_COLUMNAS = 19
+            , NUM_FILAS = 14
+            , NUM_COLUMNAS_PALETA = 2
+            , NUM_FILAS_PALETA = NUM_FILAS            
+            , MIN_TICKS_ACTUALIZACION_AVION = 3
+            , TIEMPO_FINALIZACION = 2
+            , ID_CIELO = 0
             , ID_AVION_ROJO = 4 
             , ID_AVION_AZUL = 9 
             , ID_PROYECTIL = 14
@@ -47,12 +46,17 @@ public class GuerraAeronaves extends Game {
             , ID_PICKUP_VIDA = 34
             , ID_PICKUP_GASOLINA = 39
             , ID_POWERUP_VIDA = 49
-            , ID_POWERUP_MUNICION = 54
-            , ID_PICKUP_MUNICION = 44 
+            , ID_POWERUP_MUNICIONES = 54
+            , ID_PICKUP_MUNICIONES = 44 
             , ID_ESTACION_GASOLINA_ROJO = 64
             , ID_ESTACION_GASOLINA_AZUL = 65
-            , ID_ESTACION_MUNICION_ROJO = 69
-            , ID_ESTACION_MUNICION_AZUL = 70;
+            , ID_ESTACION_MUNICIONES_ROJO = 69
+            , ID_ESTACION_MUNICIONES_AZUL = 70
+            , ID_EXPLOSION = 71
+            , MUNICIONES_AVION = 64
+            , GASOLINA_AVION = (int)Math.ceil(15 / (MIN_TICKS_ACTUALIZACION_AVION * TIEMPO_ACTUALIZACION_JUEGO))
+            , CANTIDAD_PICKUP_GASOLINA = GASOLINA_AVION / 3
+            , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3;            
     
     public static final List<String> RUTA_EXPLOSIONES = Arrays.asList(
               "explosion1.png"
@@ -61,21 +65,7 @@ public class GuerraAeronaves extends Game {
             , "explosion4.png"
             , "explosion5.png"
             , "explosion6.png");
-    
-    public static final float 
-              VIDA_AVION                = 3
-            , VIDA_ESTACION_MUNICION    = 6
-            , VIDA_ESTACION_GASOLINA    = 6
-            , VIDA_EDIFICIO             = 9
-            , VIDA_INFINITA             = Float.POSITIVE_INFINITY
-            , VIDA_PROYECTIL            = 1;
-    
-    public static final int 
-              MUNICION_INICIAL_AVION = 64;
-    
-    public static final int 
-              GASOLINA_INICIAL_AVION = 100;
-    
+       
     @Override
     public void create () {
         batch = new SpriteBatch();

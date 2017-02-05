@@ -10,8 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
@@ -23,15 +23,16 @@ import guerra.aeronaves.juego.elementos.Edificio;
 import guerra.aeronaves.juego.elementos.EstacionGasolina;
 import guerra.aeronaves.juego.elementos.EstacionGasolinaAzul;
 import guerra.aeronaves.juego.elementos.EstacionGasolinaRojo;
-import guerra.aeronaves.juego.elementos.EstacionMunicion;
-import guerra.aeronaves.juego.elementos.EstacionMunicionAzul;
-import guerra.aeronaves.juego.elementos.EstacionMunicionRojo;
+import guerra.aeronaves.juego.elementos.EstacionMuniciones;
+import guerra.aeronaves.juego.elementos.EstacionMunicionesAzul;
+import guerra.aeronaves.juego.elementos.EstacionMunicionesRojo;
+import guerra.aeronaves.juego.elementos.Explosion;
 import guerra.aeronaves.juego.elementos.Montana;
 import guerra.aeronaves.juego.elementos.Nube;
 import guerra.aeronaves.juego.elementos.PickupGasolina;
-import guerra.aeronaves.juego.elementos.PickupMunicion;
+import guerra.aeronaves.juego.elementos.PickupMuniciones;
 import guerra.aeronaves.juego.elementos.PickupVida;
-import guerra.aeronaves.juego.elementos.PowerupMunicion;
+import guerra.aeronaves.juego.elementos.PowerupMuniciones;
 import guerra.aeronaves.juego.elementos.PowerupVida;
 import guerra.aeronaves.juego.elementos.Proyectil;
 import java.util.ArrayDeque;
@@ -45,6 +46,7 @@ public class Juego extends Task {
     
     private final Stage stage;
     private final List<Elemento> elementos;
+    private final List<Elemento> elementosAQuitar;
     private final List<Vector2> centroCasillas;
     
     private final AvionAzul avionAzul;
@@ -55,24 +57,24 @@ public class Juego extends Task {
     
     private final Timer timer;
     
-    private int ticks;
+    private int ticksActualizacionAvion;
     
     public Juego(Stage stage, int matrizMapa[][]) {
         this.stage = stage;
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));
         fondo.setFillParent(true);
-        fondo.setZIndex(GuerraAeronaves.INDICE_FONDO);
         stage.addActor(fondo);
         centroCasillas = obtenerCentroCasillas();
         elementos = crearElementosMapa(matrizMapa);
+        elementosAQuitar = new ArrayList<Elemento>();
         avionAzul = buscarAvionAzul(elementos);
         avionRojo = buscarAvionRojo(elementos);
         sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
         agregarElementos(stage, elementos);
         stage.addActor(fondo);
         timer = new Timer();
-        ticks = 0;
+        ticksActualizacionAvion = 0;
     }
     
     // Inicia el reloj del juego.
@@ -84,7 +86,7 @@ public class Juego extends Task {
     @Override
     public void run() {
         
-        if (ticks >= 3) {
+        if (ticksActualizacionAvion >= GuerraAeronaves.MIN_TICKS_ACTUALIZACION_AVION) {
             actualizarAviones();
         }
         
@@ -98,7 +100,13 @@ public class Juego extends Task {
         actualizarElementosNoControlables(elementosSinAviones);   
         detectarColisiones(elementos);
         
-        ticks = (ticks >= 3) ? 0 : ticks + 1;
+        // Elimina todos los elementos que fueron destruidos
+        procesarElementosAQuitar();
+        
+        ticksActualizacionAvion = (ticksActualizacionAvion >= GuerraAeronaves
+                .MIN_TICKS_ACTUALIZACION_AVION) 
+                ? 0 
+                : ticksActualizacionAvion + 1;
     }
     
     // Se ejecuta cada tres ticks
@@ -198,11 +206,11 @@ public class Juego extends Task {
             case GuerraAeronaves.ID_ESTACION_GASOLINA_ROJO:
                 return new EstacionGasolinaRojo(posInicial);
                 
-            case GuerraAeronaves.ID_ESTACION_MUNICION_AZUL:
-                return new EstacionMunicionAzul(posInicial);
+            case GuerraAeronaves.ID_ESTACION_MUNICIONES_AZUL:
+                return new EstacionMunicionesAzul(posInicial);
                 
-            case GuerraAeronaves.ID_ESTACION_MUNICION_ROJO:
-                return new EstacionMunicionRojo(posInicial);
+            case GuerraAeronaves.ID_ESTACION_MUNICIONES_ROJO:
+                return new EstacionMunicionesRojo(posInicial);
                 
             case GuerraAeronaves.ID_MONTANA:
                 return new Montana(posInicial);
@@ -213,14 +221,14 @@ public class Juego extends Task {
             case GuerraAeronaves.ID_PICKUP_GASOLINA:
                 return new PickupGasolina(posInicial);
                 
-            case GuerraAeronaves.ID_PICKUP_MUNICION:
-                return new PickupMunicion(posInicial);
+            case GuerraAeronaves.ID_PICKUP_MUNICIONES:
+                return new PickupMuniciones(posInicial);
                 
             case GuerraAeronaves.ID_PICKUP_VIDA:
                 return new PickupVida(posInicial);
                 
-            case GuerraAeronaves.ID_POWERUP_MUNICION:
-                return new PowerupMunicion(posInicial);
+            case GuerraAeronaves.ID_POWERUP_MUNICIONES:
+                return new PowerupMuniciones(posInicial);
                 
             case GuerraAeronaves.ID_POWERUP_VIDA:
                 return new PowerupVida(posInicial);  
@@ -235,10 +243,10 @@ public class Juego extends Task {
         for (int i=0;i<elementos.size();i++) {
             if(elementos.get(i) instanceof Edificio || elementos.get(i) instanceof Montana 
                     || elementos.get(i) instanceof EstacionGasolinaAzul || elementos.get(i) instanceof EstacionGasolinaRojo
-                    || elementos.get(i) instanceof EstacionMunicionAzul || elementos.get(i) instanceof EstacionMunicionRojo
-                    || elementos.get(i) instanceof PickupMunicion || elementos.get(i) instanceof PickupVida
+                    || elementos.get(i) instanceof EstacionMunicionesAzul || elementos.get(i) instanceof EstacionMunicionesRojo
+                    || elementos.get(i) instanceof PickupMuniciones || elementos.get(i) instanceof PickupVida
                     || elementos.get(i) instanceof PickupGasolina || elementos.get(i) instanceof PowerupVida
-                    || elementos.get(i) instanceof PowerupMunicion) {
+                    || elementos.get(i) instanceof PowerupMuniciones) {
                 stage.addActor(elementos.get(i));
             }
         }
@@ -328,7 +336,13 @@ public class Juego extends Task {
                     break;
                 default:
                     avion.moveBy(-1, 0);
-            }             
+            }
+            
+            avion.setGasolina(avion.getGasolina() - 1);
+            
+            if (avion.getGasolina() <= 0) {
+                intentarDestruir(avion, avion.getVida());
+            }
         }
     }
     
@@ -345,23 +359,24 @@ public class Juego extends Task {
     
     // Remplaza el sprite del elemento por sprites de explosión durante un 
     // tiempo en segundos.
-    private void crearExplosionEnElemento(final Elemento e, float tiempo) {
+    private void crearExplosion(float x, float y, float tiempo) {
         final float tiempoSprite = tiempo / 6;
         final ArrayDeque<String> rutaExplosiones = new ArrayDeque<String>(
                 GuerraAeronaves.RUTA_EXPLOSIONES);
-        final Drawable spriteInicial = e.getDrawable();
+        final Explosion explosion = new Explosion(rutaExplosiones.pop(), new Vector2(x, y));
         
+        stage.addActor(explosion);
+        explosion.colocarEnPosicionInicial();
         sonidoExplosion.play(0.2f);
         new Timer().scheduleTask(new Timer.Task() {
             @Override
             public void run() {
                 if (!rutaExplosiones.isEmpty()) {
-                    e.setDrawable(new SpriteDrawable(new Sprite(new Texture(
+                    explosion.setDrawable(new SpriteDrawable(new Sprite(new Texture(
                             Gdx.files.internal(rutaExplosiones.pop())))));
                 }
                 else {
-                    e.setVisible(false);
-                    e.setDrawable(spriteInicial);
+                    stage.getActors().removeValue(explosion, true);
                 }
             }
         }, 0, tiempoSprite, GuerraAeronaves.RUTA_EXPLOSIONES.size() + 1);        
@@ -416,17 +431,14 @@ public class Juego extends Task {
 
         }
         else {
-            crearExplosionEnElemento(e, GuerraAeronaves.TIEMPO_EXPLOSION);
-            e.setVida(0);
-            
-            if (e instanceof Avion) {
-                terminar((Avion)e);            
-            }
+            intentarDestruir(e, e.getVida());
         }
     }
 
     // Llamado cuando un elemento choca con otro elemento.
     private void alColisionarElementos(Elemento e1, Elemento e2) {
+        // Cuando un proyectil choca con un elemento o cuando dos elementos 
+        // sólidos chocan.
         if (e1 instanceof Proyectil && recibeDañoProyectil(e2) 
                 || recibeDañoProyectil(e1) && e2 instanceof Proyectil
                 || esElementoSolido(e1) && esElementoSolido(e2)) {
@@ -434,12 +446,19 @@ public class Juego extends Task {
             intentarDestruir(e1, daño);
             intentarDestruir(e2, daño);
         }
+        
+        else if (e1 instanceof Avion) {
+            colisionAvionElementoNoSolido((Avion)e1, e2);
+        }
+        else if (e2 instanceof Avion) {
+            colisionAvionElementoNoSolido((Avion)e2, e1);
+        }
     }
 
     // Determina si un elemento puede recibir daño de un proyectil.
     private boolean recibeDañoProyectil(Elemento e) {
         return e instanceof Avion || e instanceof Edificio 
-                || e instanceof EstacionGasolina || e instanceof EstacionMunicion 
+                || e instanceof EstacionGasolina || e instanceof EstacionMuniciones 
                 || e instanceof Montana || e instanceof Proyectil;
     }
     
@@ -447,19 +466,13 @@ public class Juego extends Task {
     private void intentarDestruir(Elemento e, float daño) {
         e.setVida(e.getVida() - daño);
         if (e.getVida() <= 0) {
-            crearExplosionEnElemento(e, GuerraAeronaves.TIEMPO_EXPLOSION);
+            crearExplosion(e.getX(), e.getY(), GuerraAeronaves.TIEMPO_EXPLOSION);
             
             // Si es un avión, significa que uno de los jugadores perdió.
             if (e instanceof Avion) {
                 terminar((Avion)e);  
             }
-            
-            // Si es un proyectil, es necesario realizar tareas para sacar al 
-            // proyectil del mapa.
-            else if (e instanceof Proyectil) {
-                stage.getActors().removeValue(e, true);
-                elementos.remove(e);
-            }
+            elementosAQuitar.add(e);
         }
     }
     
@@ -509,6 +522,61 @@ public class Juego extends Task {
             // Truquito para colocar proyectil justo delante del avión.
             actualizarPosicionProyectil(p);         
         }
+    }
+
+    private void procesarElementosAQuitar() {
+        elementos.removeAll(elementosAQuitar);
+        stage.getActors().removeAll(new Array(elementosAQuitar.toArray()), true);
+        elementosAQuitar.clear();
+    }
+
+    // Llamado cada vez que un avión entra en contacto con un elemento que el 
+    // avión pueda traspasar.
+    private void colisionAvionElementoNoSolido(Avion a, Elemento e) {
+        if (e instanceof PickupGasolina) {
+            a.setGasolina(a.getGasolina() + GuerraAeronaves.CANTIDAD_PICKUP_GASOLINA);
+            elementosAQuitar.add(e);
+        }
+        else if (e instanceof PickupMuniciones) {
+            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_MUNICIONES);
+            elementosAQuitar.add(e);
+        }
+        else if (e instanceof PickupVida) {
+            a.setVida(a.getVida() + GuerraAeronaves.CANTIDAD_PICKUP_VIDA);
+            elementosAQuitar.add(e);
+        }
+        else if (e instanceof PowerupMuniciones) {
+            elementosAQuitar.add(e);
+        }
+        else if (e instanceof PowerupVida) {
+            elementosAQuitar.add(e);
+        }
+        else if (a instanceof AvionAzul) {
+            colisionAvionElementoNoSolido((AvionAzul)a, e);
+        }
+        else {
+            colisionAvionElementoNoSolido((AvionRojo)a, e);
+        }
+    }
+    
+    // Verifica si hubo colisión con alguna de las estaciones del avión azul.
+    private void colisionAvionElementoNoSolido(AvionAzul a, Elemento e) { 
+        if (e instanceof EstacionGasolinaAzul) {
+            a.setGasolina(a.getGasolina() + GuerraAeronaves.GASOLINA_AVION);
+        }
+        else if (e instanceof EstacionMunicionesAzul) {
+            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.MUNICIONES_AVION);
+        }
+    }    
+    
+    // Verifica si hubo colisión con alguna de las estaciones del avión rojo.
+    private void colisionAvionElementoNoSolido(AvionRojo a, Elemento e) { 
+        if (e instanceof EstacionGasolinaRojo) {
+            a.setGasolina(a.getGasolina() + GuerraAeronaves.GASOLINA_AVION);
+        }
+        else if (e instanceof EstacionMunicionesRojo) {
+            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.MUNICIONES_AVION);
+        }        
     }
     
 }

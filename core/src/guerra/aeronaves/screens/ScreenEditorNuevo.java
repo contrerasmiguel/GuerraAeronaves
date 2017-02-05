@@ -25,7 +25,6 @@ public class ScreenEditorNuevo extends ScreenAdapter {
 
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));
-        fondo.setZIndex(GuerraAeronaves.INDICE_FONDO);
         fondo.setFillParent(true);
         stage.addActor(fondo);
         
@@ -34,7 +33,6 @@ public class ScreenEditorNuevo extends ScreenAdapter {
         Mapa mapa = new Mapa(paleta, stage);
         
         Table tablaContenedora = new Table();
-        tablaContenedora.setZIndex(GuerraAeronaves.INDICE_MEDIO);
         tablaContenedora.setSize(GuerraAeronaves.getNumColumnasEditor() 
                 * GuerraAeronaves.calcularTamañoCasillaEditor(stage.getWidth(), stage.getHeight())
                 , GuerraAeronaves.getNumFilasEditor() 
