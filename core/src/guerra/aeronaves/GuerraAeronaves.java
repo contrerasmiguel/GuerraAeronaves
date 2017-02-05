@@ -17,8 +17,7 @@ public class GuerraAeronaves extends Game {
     private Music music_menu, music_edicion, music_juego;
     
     public static final float 
-              TIEMPO_DETECCION_TECLAS = 0.250f
-            , TIEMPO_SINCRONIZACION = 0.500f
+              TIEMPO_TICK = 0.010f
             , VIDA_AVION = 3
             , VIDA_ESTACION_MUNICION = 6
             , VIDA_ESTACION_GASOLINA = 6
@@ -54,9 +53,15 @@ public class GuerraAeronaves extends Game {
             , ID_ESTACION_MUNICIONES_AZUL = 70
             , ID_EXPLOSION = 71
             , MUNICIONES_AVION = 64
-            , GASOLINA_AVION = (int)Math.round(15 / TIEMPO_SINCRONIZACION)
+            , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3
+            , TICKS_DETECCION_TECLAS = 10
+            , TICKS_DETECCION_COLISIONES = 10
+            , TICKS_ACTUALIZACION_AVIONES = 40
+            , TICKS_ACTUALIZACION_PROYECTILES = 10
+            , TICKS_ACTUALIZACION_NUBES = 60
+            , GASOLINA_AVION = (int)Math.round(20 / (TICKS_ACTUALIZACION_AVIONES * TIEMPO_TICK))
             , CANTIDAD_PICKUP_GASOLINA = GASOLINA_AVION / 3
-            , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3;            
+            ;            
     
     public static final List<String> RUTA_EXPLOSIONES = Arrays.asList(
               "explosion1.png"

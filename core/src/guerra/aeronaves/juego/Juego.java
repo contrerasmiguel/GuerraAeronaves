@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -35,6 +36,7 @@ import guerra.aeronaves.juego.elementos.PickupVida;
 import guerra.aeronaves.juego.elementos.PowerupMuniciones;
 import guerra.aeronaves.juego.elementos.PowerupVida;
 import guerra.aeronaves.juego.elementos.Proyectil;
+import java.awt.Point;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +49,7 @@ public class Juego {
     private final Stage stage;
     private final List<Elemento> elementos;
     private final List<Elemento> elementosAQuitar;
-    private final List<Vector2> centroCasillas;
+    private final List<Vector2> centrosCasillas;
     
     private final AvionAzul avionAzul;
     private final AvionRojo avionRojo;
@@ -55,23 +57,33 @@ public class Juego {
     private final Sound sonidoExplosion;
     private JuegoListener juegoListener;
     
+    private final int[][] matrizMapa;
+    
     private final Timer timer;
+    private long ticks;
     
     public Juego(Stage stage, int matrizMapa[][]) {
         this.stage = stage;
+        this.matrizMapa = matrizMapa;
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));
+        sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
+        
         fondo.setFillParent(true);
         stage.addActor(fondo);
-        centroCasillas = obtenerCentroCasillas();
-        elementos = crearElementosMapa(matrizMapa);
+        
+        centrosCasillas = obtenerCentrosCasillas();
+        elementos = crearElementosMapa();
         elementosAQuitar = new ArrayList<Elemento>();
+        
         avionAzul = buscarAvionAzul(elementos);
         avionRojo = buscarAvionRojo(elementos);
-        sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
+        
         agregarElementos(stage, elementos);
         stage.addActor(fondo);
+        
         timer = new Timer();
+        ticks = 0;
     }
     
     // Inicia el reloj del juego.
@@ -79,70 +91,73 @@ public class Juego {
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
-                detectarTeclas(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
-                detectarTeclas(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
+                ticks = (ticks == Long.MAX_VALUE) ? 0 : ticks + 1;
+                
+                if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {
+                    detectarTeclas(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
+                    detectarTeclas(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);                    
+                }
+                
+                if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES == 0) {
+                    actualizarProyectiles(buscarProyectiles(elementos));
+                }
+                
+                if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
+                    actualizarAviones(buscarAviones(elementos));
+                }
+                
+                if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_NUBES == 0) {
+                    actualizarNubes(buscarNubes(elementos));
+                }
+                
+                if (ticks % GuerraAeronaves.TICKS_DETECCION_COLISIONES == 0) {
+                    detectarColisiones(elementos);
+                    // Elimina todos los elementos que fueron destruidos
+                    procesarElementosAQuitar();
+                }
             }
-        }, 0, GuerraAeronaves.TIEMPO_DETECCION_TECLAS);
+        }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
+    }
+    
+
+    // Realiza las tareas antes de terminar el juego y dispara el evento 
+    // del listener correspondiente.
+    private void terminar(final Avion a) {
+        timer.stop();
         
-        timer.scheduleTask(new Task() {
+        new Timer().scheduleTask(new Task() {
             @Override
             public void run() {
-                List<Elemento> elementosSinAviones = obtenerElementosSinAviones(elementos);
-                actualizarElementosNoControlables(elementosSinAviones);   
-                detectarColisiones(elementos);
-
-                // Elimina todos los elementos que fueron destruidos
-                procesarElementosAQuitar();
+                if (juegoListener != null) {
+                    if (a instanceof AvionAzul) {
+                        juegoListener.alTerminar(Ganador.ROJO);
+                    }
+                    else {
+                        juegoListener.alTerminar(Ganador.AZUL);
+                    }
+                }                
             }
-        }, 0, GuerraAeronaves.TIEMPO_SINCRONIZACION);
-    }
-   
-    // Devuelve un arreglo con todos los centros de las casillas del mapa
-    private ArrayList<Vector2> obtenerCentroCasillas() {
-        ArrayList<Vector2> centros = new ArrayList<Vector2>();
-        
-        for (int i = 0; i < GuerraAeronaves.NUM_FILAS; i++) {
-            for (int j = 0; j < GuerraAeronaves.NUM_COLUMNAS; j++) {
-                centros.add(new Vector2(j * GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight()),
-                i * GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight())));
-            }
-        }
-        return centros;
-    }
-    
-    private boolean colisionoConPared(Elemento e) {
-        return e.getX() < 0 || e.getX() > stage.getWidth() - GuerraAeronaves
-                .calcularTamañoCasilla(stage.getWidth(), stage.getHeight())
-                || e.getY() < 0 || e.getY() > stage.getHeight() 
-                - GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight());
-    }
-    
-    // Determinar si el elemento colisión con otro elemento o con el borde del 
-    // mapa
-    private Elemento buscarElementoColisionado(Elemento e) {       
-        for (Elemento ec : elementos) {
-            if (e != ec && e.getX() == ec.getX() && e.getY() == ec.getY()) {
-                return ec;
-            }
-        }
-        return null;
-    }
+        }, GuerraAeronaves.TIEMPO_FINALIZACION, 0, 0);
+    }    
    
     // Método que convierte los ID de la matriz de elementos leidos del 
     // archivo de texto en objetos de tipo Elemento
-    private ArrayList<Elemento> crearElementosMapa(int[][] matrizMapa) {
+    private ArrayList<Elemento> crearElementosMapa() {
         ArrayList<Elemento> elementosMapa = new ArrayList<Elemento>();
         
         // Recorremos cada elemento de la matriz
         for (int i = 0; i < matrizMapa.length; ++i) {
             for (int j = 0; j < matrizMapa[0].length; ++j) {
-                int indiceArregloCentros = (matrizMapa.length - 1 - i) * matrizMapa[0].length + j;
-                
-                Elemento e = crearElemento(matrizMapa[i][j], new Vector2(centroCasillas
-                        .get(indiceArregloCentros).x, centroCasillas.get(indiceArregloCentros).y));
+                Elemento e = crearElemento(matrizMapa[i][j], new Point(j, i));
                                
                 if (e != null) {
-                    e.setPosicion(e.getPosicion());
+                    Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, j, i);
+                    e.setPosition(posicionMapa.x, posicionMapa.y);
+                    if (e instanceof Avion) {
+                        Avion a = (Avion)e;
+                        moverElemento(a, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);
+                    }
+                    
                     elementosMapa.add(e);                  
                 }
             }
@@ -152,49 +167,49 @@ public class Juego {
 
     // Método que recibe el ID de un tipo de elemento y una posición 
     // inicial y construye un elemento en base a ello.
-    private Elemento crearElemento(int idElemento, Vector2 posInicial) {        
+    private Elemento crearElemento(int idElemento, Point posicion) {        
         switch (idElemento) {            
             case GuerraAeronaves.ID_AVION_AZUL:
-                return new AvionAzul(posInicial, Direccion.DERECHA);
+                return new AvionAzul(posicion, Direccion.DERECHA);
                 
             case GuerraAeronaves.ID_AVION_ROJO:
-                return new AvionRojo(posInicial, Direccion.IZQUIERDA); 
+                return new AvionRojo(posicion, Direccion.IZQUIERDA); 
                 
             case GuerraAeronaves.ID_EDIFICIO:
-                return new Edificio(posInicial);
+                return new Edificio(posicion);
                 
             case GuerraAeronaves.ID_ESTACION_GASOLINA_AZUL:
-                return new EstacionGasolinaAzul(posInicial);
+                return new EstacionGasolinaAzul(posicion);
                 
             case GuerraAeronaves.ID_ESTACION_GASOLINA_ROJO:
-                return new EstacionGasolinaRojo(posInicial);
+                return new EstacionGasolinaRojo(posicion);
                 
             case GuerraAeronaves.ID_ESTACION_MUNICIONES_AZUL:
-                return new EstacionMunicionesAzul(posInicial);
+                return new EstacionMunicionesAzul(posicion);
                 
             case GuerraAeronaves.ID_ESTACION_MUNICIONES_ROJO:
-                return new EstacionMunicionesRojo(posInicial);
+                return new EstacionMunicionesRojo(posicion);
                 
             case GuerraAeronaves.ID_MONTANA:
-                return new Montana(posInicial);
+                return new Montana(posicion);
                 
             case GuerraAeronaves.ID_NUBE:
-                return new Nube(posInicial, Direccion.DERECHA);
+                return new Nube(posicion, Direccion.DERECHA);
                 
             case GuerraAeronaves.ID_PICKUP_GASOLINA:
-                return new PickupGasolina(posInicial);
+                return new PickupGasolina(posicion);
                 
             case GuerraAeronaves.ID_PICKUP_MUNICIONES:
-                return new PickupMuniciones(posInicial);
+                return new PickupMuniciones(posicion);
                 
             case GuerraAeronaves.ID_PICKUP_VIDA:
-                return new PickupVida(posInicial);
+                return new PickupVida(posicion);
                 
             case GuerraAeronaves.ID_POWERUP_MUNICIONES:
-                return new PowerupMuniciones(posInicial);
+                return new PowerupMuniciones(posicion);
                 
             case GuerraAeronaves.ID_POWERUP_VIDA:
-                return new PowerupVida(posInicial);  
+                return new PowerupVida(posicion);  
         }
         
         return null;
@@ -225,46 +240,11 @@ public class Juego {
         }
     }
 
-    // Retorna el primer avión azul que consiga en un arreglo de elementos. 
-    // Si no encuentra ninguno, devuelve null.
-    private AvionAzul buscarAvionAzul(List<Elemento> elementos) {
-        return (AvionAzul)elementos.stream().filter(new Predicate<Elemento>() {
-            @Override
-            public boolean test(Elemento e) {
-                return e instanceof AvionAzul;
-            }
-        })
-        .findFirst().orElseGet(new Supplier<Elemento>() {
-            @Override
-            public Elemento get() {
-                return null;
-            }
-        });
-    }
-
-    // Retorna el primer avión rojo que consiga en un arreglo de elementos. 
-    // Si no encuentra ninguno, devuelve null.    
-    private AvionRojo buscarAvionRojo(List<Elemento> elementos) {
-        return (AvionRojo)elementos.stream()
-                .filter(new Predicate<Elemento>() {
-                    @Override
-                    public boolean test(Elemento e) {
-                        return e instanceof AvionRojo;
-                    }
-                })
-                .findFirst().orElseGet(new Supplier<Elemento>() {
-                    @Override
-                    public Elemento get() {
-                        return null;
-                    }
-                });       
-    }
-
     // Actualiza las propiedades del avión en función de las teclas que 
     // presionó el usuario y el estado actual del juego.
     private void detectarTeclas(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
             , int TECLA_IZQUIERDA, int TECLA_DERECHA, int TECLA_DISPARAR) {
-        if (avion != null && avion.getVida() > 0) {
+        if (avion != null) {
             if(Gdx.input.isKeyPressed(TECLA_ARRIBA)) {
                 actualizarDireccionAvion(avion, Direccion.ARRIBA);
             }
@@ -281,45 +261,33 @@ public class Juego {
                 actualizarDireccionAvion(avion, Direccion.DERECHA);
             }
             
-            if (Gdx.input.isKeyJustPressed(TECLA_DISPARAR)) {
-                Proyectil p = new Proyectil(avion.getDireccion(), new Vector2(
-                        avion.getX(), avion.getY()));
-                disparoAvion(avion, p);                
+            if (Gdx.input.isKeyPressed(TECLA_DISPARAR)) {
+                if (avion.getMuniciones() > 0) {
+                    Proyectil p = new Proyectil(avion.getDireccion(), avion.getProximaPosicion(), avion);
+                    avion.setMuniciones(avion.getMuniciones() - 1);
+                    Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
+                            , p.getPosicion().x, p.getPosicion().y);
+                    p.setPosition(posicionEnMapa.x, posicionEnMapa.y);
+                    moverElemento(p, GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES);
+                    elementos.add(p);
+                    stage.addActor(p);
+                }               
             }
         }
     }
     
-    private void actualizarAvion(Avion avion) {
-        avion.setDireccion(avion.getProximaDireccion());
-
-        avion.setGasolina(avion.getGasolina() - 1);
-
-        if (avion.getGasolina() <= 0) {
-            intentarDestruir(avion, avion.getVida());
-        }
-    }
-    
-    // Verifica si la dirección es válida. En caso de serlo, es fijada como
-    // próxima dirección del avión.
-    private void actualizarDireccionAvion(Avion a, Direccion d) {
-        if(d == Direccion.ARRIBA && a.getDireccion() != Direccion.ABAJO 
-                || d == Direccion.DERECHA && a.getDireccion() != Direccion.IZQUIERDA
-                || d == Direccion.ABAJO && a.getDireccion() != Direccion.ARRIBA 
-                || d == Direccion.IZQUIERDA && a.getDireccion() != Direccion.DERECHA) {
-            a.setProximaDireccion(d);
-        }        
-    }
-    
     // Remplaza el sprite del elemento por sprites de explosión durante un 
     // tiempo en segundos.
-    private void crearExplosion(float x, float y, float tiempo) {
+    private void crearExplosion(Point posicion, float tiempo) {
         final float tiempoSprite = tiempo / 6;
         final ArrayDeque<String> rutaExplosiones = new ArrayDeque<String>(
                 GuerraAeronaves.RUTA_EXPLOSIONES);
-        final Explosion explosion = new Explosion(rutaExplosiones.pop(), new Vector2(x, y));
+        Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa
+                , centrosCasillas, posicion.x, posicion.y);
+        final Explosion explosion = new Explosion(rutaExplosiones.pop(), posicion);
         
         stage.addActor(explosion);
-        explosion.setPosicion(explosion.getPosicion());
+        explosion.setPosition(posicionEnMapa.x, posicionEnMapa.y);
         sonidoExplosion.play(0.2f);
         new Timer().scheduleTask(new Timer.Task() {
             @Override
@@ -337,26 +305,6 @@ public class Juego {
 
     public void setJuegoListener(JuegoListener jl) {
         juegoListener = jl;
-    }
-
-    // Realiza las tareas antes de terminar el juego y dispara el evento 
-    // del listener correspondiente.
-    private void terminar(final Avion a) {
-        timer.stop();
-        
-        new Timer().scheduleTask(new Task() {
-            @Override
-            public void run() {
-                if (juegoListener != null) {
-                    if (a instanceof AvionAzul) {
-                        juegoListener.alTerminar(Ganador.ROJO);
-                    }
-                    else {
-                        juegoListener.alTerminar(Ganador.AZUL);
-                    }
-                }                
-            }
-        }, GuerraAeronaves.TIEMPO_FINALIZACION, 0, 0);
     }
 
     // Recorre cada elemento, buscando si ha colisionado con otro elemento o una 
@@ -378,6 +326,16 @@ public class Juego {
         }
     }
 
+    private boolean colisionoConPared(Elemento e) {
+        return (e instanceof Avion || e instanceof Nube || e instanceof Proyectil) 
+                && ((e.getPosicion().x <= 0 && e.getDireccion() == Direccion.IZQUIERDA)
+                || e.getPosicion().x >= matrizMapa[0].length - 1 && e.getDireccion() == Direccion.DERECHA
+                || e.getPosicion().y <= 0 && e.getDireccion() == Direccion.ARRIBA
+                || e.getPosicion().y >= matrizMapa.length - 1 && e.getDireccion() == Direccion.ABAJO)
+                || e.getPosicion().x < 0 || e.getPosicion().x > matrizMapa[0].length - 1
+                || e.getPosicion().y < 0 || e.getPosicion().y > matrizMapa.length - 1;
+    }    
+    
     // Llamado cuando un elemento choca con una pared.
     private void alColisionarConPared(Elemento e) {
         if (e instanceof Nube) {
@@ -419,7 +377,7 @@ public class Juego {
     private void intentarDestruir(Elemento e, float daño) {
         e.setVida(e.getVida() - daño);
         if (e.getVida() <= 0) {
-            crearExplosion(e.getX(), e.getY(), GuerraAeronaves.TIEMPO_EXPLOSION);
+            crearExplosion(e.getPosicion(), GuerraAeronaves.TIEMPO_EXPLOSION);
             
             // Si es un avión, significa que uno de los jugadores perdió.
             if (e instanceof Avion) {
@@ -433,28 +391,6 @@ public class Juego {
     private boolean esElementoSolido(Elemento e) {
         return e instanceof Avion || e instanceof Edificio || e instanceof Montana 
                 || e instanceof Proyectil;
-    }
-
-    // Actualiza la posición de los elementos no controlables, dígase todos 
-    // aquellos que no son aviones.
-    private void actualizarElementosNoControlables(List<Elemento> es) {
-        for (Elemento e : es) {
-            if (e instanceof Nube) {
-                
-            }
-            else if (e instanceof Proyectil && e.getVida() > 0) {
-                actualizarPosicionElemento((Proyectil)e);
-            }
-        }
-    }
-
-    private void disparoAvion(Avion avion, Proyectil p) {
-        if (avion.getMuniciones() > 0) {
-            avion.setMuniciones(avion.getMuniciones() - 1);
-            elementos.add(p);
-            stage.addActor(p);
-            p.setPosicion(avion.getPosicionEnFrente());
-        }
     }
 
     private void procesarElementosAQuitar() {
@@ -512,34 +448,169 @@ public class Juego {
         }        
     }
     
-    private List<Elemento> obtenerElementosSinAviones(List<Elemento> es) {
-        return (List<Elemento>)es.stream().filter(new Predicate() {
+    private void actualizarAviones(List<Avion> aviones) {
+        for (Avion a : aviones) {
+            if (a.getVida() > 0) {
+                if (a.getGasolina() <= 0) {
+                    intentarDestruir(a, a.getVida());
+                }
+                else {
+                    a.setGasolina(a.getGasolina() - 1);
+                    actualizarPosicionAvion(a);                 
+                }
+            }
+        }
+    }
+    
+    // Verifica si la dirección es válida. En caso de serlo, es fijada como
+    // próxima dirección del avión.
+    private void actualizarDireccionAvion(Avion a, Direccion d) {
+        if(d == Direccion.ARRIBA && a.getDireccion() != Direccion.ABAJO 
+                || d == Direccion.DERECHA && a.getDireccion() != Direccion.IZQUIERDA
+                || d == Direccion.ABAJO && a.getDireccion() != Direccion.ARRIBA 
+                || d == Direccion.IZQUIERDA && a.getDireccion() != Direccion.DERECHA) {
+            a.setProximaDireccion(d);
+        }        
+    }
+    
+    private void actualizarPosicionAvion(Avion a) {
+        a.setPosicion(a.getProximaPosicion());
+        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, a.getPosicion().x, a.getPosicion().y);
+        a.setPosition(posicionActualMapa.x, posicionActualMapa.y);
+        a.setDireccion(a.getProximaDireccion());
+        moverElemento(a, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);        
+    }      
+
+    private void actualizarProyectiles(List<Proyectil> proyectiles) {
+        for (Elemento p : proyectiles) {
+            if (p instanceof Proyectil && p.getVida() > 0) {
+                actualizarPosicionProyectiles((Proyectil)p);
+            }
+        }
+    }
+
+    private void actualizarPosicionProyectiles(Proyectil p) {
+        p.setPosicion(p.getProximaPosicion());
+        moverElemento(p, GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES);
+    }
+    
+    private void actualizarNubes(List<Nube> nubes) {
+        // TO-DO: movimiento de nubes
+    }
+    
+    private void moverElemento(Elemento e, int ticksVelocidad) {
+        Vector2 proximaPosicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
+                , e.getProximaPosicion().x, e.getProximaPosicion().y);
+        e.addAction(Actions.moveTo(proximaPosicionMapa.x, proximaPosicionMapa.y
+                , ticksVelocidad * GuerraAeronaves.TIEMPO_TICK));        
+    }
+    
+    // Devuelve un arreglo con todos los centros de las casillas del mapa
+    private ArrayList<Vector2> obtenerCentrosCasillas() {
+        ArrayList<Vector2> centros = new ArrayList<Vector2>();
+        
+        for (int i = 0; i < GuerraAeronaves.NUM_FILAS; i++) {
+            for (int j = 0; j < GuerraAeronaves.NUM_COLUMNAS; j++) {
+                centros.add(new Vector2(j * GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight()),
+                i * GuerraAeronaves.calcularTamañoCasilla(stage.getWidth(), stage.getHeight())));
+            }
+        }
+        return centros;
+    }    
+    
+    // Retorna el primer avión azul que consiga en un arreglo de elementos. 
+    // Si no encuentra ninguno, devuelve null.
+    private AvionAzul buscarAvionAzul(List<Elemento> es) {
+        return (AvionAzul)es.stream().filter(new Predicate<Elemento>() {
+            @Override
+            public boolean test(Elemento e) {
+                return e instanceof AvionAzul;
+            }
+        })
+        .findFirst().orElseGet(new Supplier<Elemento>() {
+            @Override
+            public Elemento get() {
+                return null;
+            }
+        });
+    }
+
+    // Retorna el primer avión rojo que consiga en un arreglo de elementos. 
+    // Si no encuentra ninguno, devuelve null.    
+    private AvionRojo buscarAvionRojo(List<Elemento> es) {
+        return (AvionRojo)es.stream()
+                .filter(new Predicate<Elemento>() {
+                    @Override
+                    public boolean test(Elemento e) {
+                        return e instanceof AvionRojo;
+                    }
+                })
+                .findFirst().orElseGet(new Supplier<Elemento>() {
+                    @Override
+                    public Elemento get() {
+                        return null;
+                    }
+                });       
+    }    
+    
+    private List<Avion> buscarAviones(List<Elemento> es) {
+        return (List<Avion>)es.stream().filter(new Predicate() {
                 @Override
                 public boolean test(Object t) {
-                    Elemento e = (Elemento)t;
-                    return e != avionAzul && e != avionRojo;
+                    return t instanceof Avion;
+                }
+            }).collect(toList());        
+    }
+    
+    private List<Proyectil> buscarProyectiles(List<Elemento> es) {
+        return (List<Proyectil>)es.stream().filter(new Predicate() {
+                @Override
+                public boolean test(Object t) {
+                    return t instanceof Proyectil;
                 }
             }).collect(toList());
     }
-
-    private void actualizarPosicionElemento(Elemento e) {
-        Direccion d = (e instanceof Avion) 
-                ? ((Avion)e).getDireccion()
-                : (e instanceof Nube) 
-                    ? ((Nube)e).getDireccion() 
-                    : ((Proyectil)e).getDireccion();
-        
-        switch (d) {
-            case ARRIBA:
-                
-                break;
-            case DERECHA:
-                break;
-            case ABAJO:
-                break;
-            default:
-                
+    
+    private List<Nube> buscarNubes(List<Elemento> es) {
+        return (List<Nube>)es.stream().filter(new Predicate() {
+                @Override
+                public boolean test(Object t) {
+                    return t instanceof Nube;
+                }
+            }).collect(toList());
+    }
+    
+    // Determinar si el elemento colisión con otro elemento o con el borde del 
+    // mapa
+    private Elemento buscarElementoColisionado(Elemento e) {
+        for (Elemento ec : elementos) {
+            if (e instanceof Proyectil && ec instanceof Proyectil) {                
+                if (((Proyectil)e).getElementoCreador() != ((Proyectil)ec).getElementoCreador()) {
+                    return ec;
+                }
+                else {
+                    return null;
+                }
+            }
+            else if (e != ec && e.getPosicion().x == ec.getPosicion().x 
+                    && e.getPosicion().y == ec.getPosicion().y) {
+                return ec;
+            }
         }
+        return null;
+    }
+    
+    private Vector2 calcularPosicionMapa(int[][] matrizMapa
+            , List<Vector2> centrosCasillas, int columna, int fila) {
+        
+        columna = Math.max(0, columna);
+        columna = Math.min(matrizMapa[0].length - 1, columna);
+        
+        fila = Math.max(0, fila);
+        fila = Math.min(matrizMapa.length - 1, fila);
+        
+        int idxCentro = (matrizMapa.length - 1 - fila) * matrizMapa[0].length + columna;
+        return centrosCasillas.get(idxCentro);
     }
     
 }

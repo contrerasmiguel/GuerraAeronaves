@@ -1,13 +1,20 @@
 package guerra.aeronaves.juego.elementos;
 
-import com.badlogic.gdx.math.Vector2;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.GuerraAeronaves;
+import java.awt.Point;
 
 public class Proyectil extends Elemento {
     
-    public Proyectil(Direccion direccion, Vector2 posicion) {
+    private final Elemento elementoCreador;
+    
+    public Proyectil(Direccion direccion, Point posicion, Avion elementoCreador) {
         super("proyectil.png", GuerraAeronaves.ID_PROYECTIL, posicion, direccion, GuerraAeronaves.VIDA_PROYECTIL);
+        this.elementoCreador = elementoCreador;
+    }
+
+    public Elemento getElementoCreador() {
+        return elementoCreador;
     }
     
 }

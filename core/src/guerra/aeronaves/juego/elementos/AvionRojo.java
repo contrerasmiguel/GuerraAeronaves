@@ -1,12 +1,12 @@
 package guerra.aeronaves.juego.elementos;
 
-import com.badlogic.gdx.math.Vector2;
 import guerra.aeronaves.Direccion;
+import java.awt.Point;
 
 public class AvionRojo extends Avion {
     
-    public AvionRojo(Vector2 posInicial, Direccion dir) {
-        super("avion_rojo.png", posInicial, dir);
+    public AvionRojo(Point posicion, Direccion dir) {
+        super("avion_rojo.png", posicion, dir);
     }
 
 }
