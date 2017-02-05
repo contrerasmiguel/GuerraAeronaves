@@ -31,7 +31,7 @@ public class GuerraAeronaves extends Game {
     
     // Tiempo que hay entre la explosión de una aeronave y la restauración de 
     // la misma.
-    public static final int TIEMPO_REAPARICION = 2;
+    public static final int TIEMPO_FINALIZACION = 2;
     
     // Tiempo durante el cual se muestran los sprites de explosión
     public static final float TIEMPO_EXPLOSION = 0.5f;
@@ -122,6 +122,11 @@ public class GuerraAeronaves extends Game {
     public void setScreenEditorNuevo() {
         sc_editor = new ScreenEditorNuevo(this);
         setScreen(sc_editor);
+        setMusica(music_edicion);
+    }
+    
+    public void setScreenFinalizacionJuego(Ganador ganador) {
+        setScreen(new ScreenFinalizacionJuego(this, ganador));
         setMusica(music_edicion);
     }
     

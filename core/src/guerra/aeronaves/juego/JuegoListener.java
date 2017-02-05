@@ -1,7 +1,9 @@
 package guerra.aeronaves.juego;
 
+import guerra.aeronaves.Ganador;
+
 public interface JuegoListener {
     
-    public void alTerminarJuego();
+    public void alTerminar(Ganador ganador);
     
 }

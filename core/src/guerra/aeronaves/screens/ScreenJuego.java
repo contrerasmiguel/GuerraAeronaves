@@ -6,6 +6,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
 import guerra.aeronaves.juego.JuegoListener;
 import java.util.Scanner;
@@ -13,15 +14,21 @@ import java.util.Scanner;
 public class ScreenJuego extends ScreenAdapter implements JuegoListener {
     
     private final Stage stage;
-    private Juego juego;
+    private final Juego juego;
+    private final GuerraAeronaves guerraAeronaves;
 
     public ScreenJuego(GuerraAeronaves guerraAeronaves) {
+        this.guerraAeronaves = guerraAeronaves;
+
         stage = new Stage(new FitViewport(GuerraAeronaves.calcularTamañoCasilla(Gdx
                 .graphics.getWidth(), Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_COLUMNAS
                 , GuerraAeronaves.calcularTamañoCasilla(Gdx.graphics.getWidth()
                         , Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_FILAS));
         
-        crearJuego();
+        juego = new Juego(stage, leerMapa());
+        juego.setJuegoListener(this);
+        juego.iniciar();
+
         Gdx.input.setInputProcessor(stage);
     }  
     
@@ -54,16 +61,8 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
     }
 
     @Override
-    public void alTerminarJuego() {
-        // CÓDIGO DE PRUEBA
-        crearJuego();
-        // FIN DE CÓDIGO DE PRUEBA
-    }
-    
-    private void crearJuego() {
-        juego = new Juego(stage, leerMapa());
-        juego.setJuegoListener(this);
-        juego.iniciar();        
+    public void alTerminar(Ganador ganador) {
+        guerraAeronaves.setScreenFinalizacionJuego(ganador);
     }
     
 }

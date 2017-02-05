@@ -24,6 +24,8 @@ public abstract class ScreenMenu extends ScreenAdapter {
         stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         stage.addActor(imgFondo);
         
+        imgFondo.setFillParent(true);
+        
         Gdx.input.setInputProcessor(stage);
     }
     

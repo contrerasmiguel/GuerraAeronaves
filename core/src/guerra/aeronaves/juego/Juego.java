@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
+import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
@@ -50,6 +51,8 @@ public class Juego extends Task {
     private final Sound sonidoExplosion;
     private JuegoListener juegoListener;
     
+    private final Timer timer;
+    
     public Juego(Stage stage, int matrizMapa[][]) {
         this.stage = stage;
         
@@ -71,11 +74,13 @@ public class Juego extends Task {
         agregarElementos(stage, elementos);
         
         stage.addActor(fondo);
+        
+        timer = new Timer();
     }
     
     // Inicia el reloj del juego.
     public void iniciar() {
-        new Timer().scheduleTask(this, 0, GuerraAeronaves.TIEMPO_RELOJ);
+        timer.scheduleTask(this, 0, GuerraAeronaves.TIEMPO_RELOJ);
     }
 
     // Reloj (se ejecuta cada GuerraAeronaves.TIEMPO_RELOJ)
@@ -315,6 +320,8 @@ public class Juego extends Task {
         }        
     }
     
+    // Remplaza el sprite del elemento por sprites de explosión durante un 
+    // tiempo en segundos.
     private void crearExplosionEnElemento(final Elemento e, float tiempo) {
         final float tiempoSprite = tiempo / 6;
         final ArrayDeque<String> rutaExplosiones = new ArrayDeque<String>(
@@ -342,9 +349,23 @@ public class Juego extends Task {
     }
 
     // Realiza las tareas antes de terminar el juego y dispara el evento 
-    // "alTerminarJuego".
-    private void terminarJuego() {
-        juegoListener.alTerminarJuego();
+    // del listener correspondiente.
+    private void terminar(final Avion a) {
+        timer.stop();
+        
+        new Timer().scheduleTask(new Task() {
+            @Override
+            public void run() {
+                if (juegoListener != null) {
+                    if (a instanceof AvionAzul) {
+                        juegoListener.alTerminar(Ganador.ROJO);
+                    }
+                    else {
+                        juegoListener.alTerminar(Ganador.AZUL);
+                    }
+                }                
+            }
+        }, GuerraAeronaves.TIEMPO_FINALIZACION, 0, 0);
     }
 
     // Recorre cada elemento, buscando si ha colisionado con otro elemento o una 
@@ -371,6 +392,7 @@ public class Juego extends Task {
         if (e instanceof Avion) {
             crearExplosionEnElemento(e, GuerraAeronaves.TIEMPO_EXPLOSION);
             e.setVida(0);
+            terminar((Avion)e);
         }
         else if (e instanceof Nube) {
             
@@ -383,8 +405,8 @@ public class Juego extends Task {
                 || recibeDañoProyectil(e1) && e2 instanceof Proyectil
                 || esElementoSolido(e1) && esElementoSolido(e2)) {
             float daño = Math.min(e1.getVida(), e2.getVida());
-            explosionAlDestruir(e1, daño);
-            explosionAlDestruir(e2, daño);
+            intentarDestruir(e1, daño);
+            intentarDestruir(e2, daño);
         }
     }
 
@@ -396,10 +418,11 @@ public class Juego extends Task {
     }
     
     // Quita vida al elemento y crea una explosión si la vida llega a cero.
-    private void explosionAlDestruir(Elemento e, float daño) {
+    private void intentarDestruir(Elemento e, float daño) {
         e.setVida(e.getVida() - daño);
         if (e.getVida() <= 0) {
             crearExplosionEnElemento(e, GuerraAeronaves.TIEMPO_EXPLOSION);
+            terminar((Avion)e);
         }
     }
     
