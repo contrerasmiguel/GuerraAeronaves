@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
+import guerra.aeronaves.Servidor;
 import guerra.aeronaves.juego.JuegoListener;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
     private final Juego juego;
     private final GuerraAeronaves guerraAeronaves;
 
-    public ScreenJuego(GuerraAeronaves guerraAeronaves) {
+    public ScreenJuego(GuerraAeronaves guerraAeronaves, Servidor s) {
         this.guerraAeronaves = guerraAeronaves;
 
         stage = new Stage(new FitViewport(GuerraAeronaves.calcularTamañoCasilla(Gdx
