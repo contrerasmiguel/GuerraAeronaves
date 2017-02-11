@@ -1,8 +1,11 @@
 package guerra.aeronaves;
 
+import guerra.aeronaves.juego.TeclasPresionadas;
 import java.net.*;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Servidor {
     final int PUERTO;
@@ -16,29 +19,41 @@ public class Servidor {
     }
 
     //SERVIDOR
-    public void initServer(){
-        BufferedReader entrada;
+    public void iniciarConexion(){
         try {
             sc = new ServerSocket(PUERTO);/* crea socket servidor que escuchara en puerto 5000*/
-            so=new Socket();
-            System.out.println("Esperando una conexión:");
+            so = new Socket();
             so = sc.accept();
-            //Inicia el socket, ahora esta esperando una conexión por parte del cliente
-            System.out.println("Un cliente se ha conectado.");
-            //Canales de entrada y salida de datos
-            entrada = new BufferedReader(new InputStreamReader(so.getInputStream()));
-            salida = new DataOutputStream(so.getOutputStream());
-            System.out.println("Confirmando conexion al cliente....");
-            salida.writeUTF("Conexión exitosa... envia un mensaje");
-            //Recepcion de mensaje
-            mensajeRecibido = entrada.readLine();
-            System.out.println(mensajeRecibido);
-            salida.writeUTF("Se recibio tu mensaje.n Terminando conexion...");
-            salida.writeUTF("Gracias por conectarte");
-            System.out.println("Cerrando conexión...");
-            sc.close();//Aqui se cierra la conexión con el cliente
-        }catch(Exception e ) {
-            System.out.println("Error: "+e.getMessage());
+        }
+        catch(Exception e ) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
+    
+    public void cerrarConexion() {
+       if (sc != null) {
+           try {
+               sc.close();
+           } catch (IOException ex) {
+               Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+           }
+       } 
+    }
+    
+    public TeclasPresionadas recibirMensajeTeclas() {
+        if (so != null) {
+            try {
+                ObjectInputStream mensaje = new ObjectInputStream(so.getInputStream());
+                return (TeclasPresionadas)mensaje.readObject();
+            } 
+            catch (IOException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+            catch (ClassNotFoundException ex) {
+                Logger.getLogger(Servidor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+    
 }

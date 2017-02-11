@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
+import guerra.aeronaves.Servidor;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
@@ -40,6 +41,7 @@ import java.awt.Point;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
@@ -62,7 +64,9 @@ public class Juego {
     private final Timer timer;
     private long ticks;
     
-    public Juego(Stage stage, int matrizMapa[][]) {
+    private final Servidor servidorTeclas;
+    
+    public Juego(Stage stage, int matrizMapa[][], Servidor s) {
         this.stage = stage;
         this.matrizMapa = matrizMapa;
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
@@ -84,6 +88,8 @@ public class Juego {
         
         timer = new Timer();
         ticks = 0;
+        
+        servidorTeclas = s;
     }
     
     // Inicia el reloj del juego.
@@ -93,18 +99,29 @@ public class Juego {
             public void run() {
                 ticks = (ticks == Long.MAX_VALUE) ? 0 : ticks + 1;
                 
-                if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {
-                    detectarTeclas(avionAzul, Keys.W, Keys.S, Keys.A, Keys.D, Keys.SPACE);
-                    detectarTeclas(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);                    
+                if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {                    
+                    //detectarTeclasViejo(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
+                    //procesarTeclasPresionadas(avionAzul, tpAvionAzul);                    
+
+                    /*TeclasPresionadas tpAvionAzul = servidorTeclas.recibirMensajeTeclas();
+                    procesarTeclasPresionadas(avionAzul, tpAvionAzul);*/
+                    
+                    TeclasPresionadas tpAvionRojo = detectarTeclas(
+                              Keys.UP
+                            , Keys.RIGHT
+                            , Keys.DOWN
+                            , Keys.LEFT
+                            , Keys.CONTROL_RIGHT);
+                    procesarTeclasPresionadas(avionRojo, tpAvionRojo);                             
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES == 0) {
                     actualizarProyectiles(buscarProyectiles(elementos));
                 }
                 
-                if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
+                /*if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
                     actualizarAviones(buscarAviones(elementos));
-                }
+                }*/
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_NUBES == 0) {
                     actualizarNubes(buscarNubes(elementos));
@@ -194,7 +211,14 @@ public class Juego {
                 return new Montana(posicion);
                 
             case GuerraAeronaves.ID_NUBE:
-                return new Nube(posicion, Direccion.DERECHA);
+                // TO-DO: mejorar la inicialización de la lista (inline).
+                Random r = new Random();
+                List<Direccion> direcciones = new ArrayList<Direccion>();
+                direcciones.add(Direccion.ABAJO);
+                direcciones.add(Direccion.ARRIBA);
+                direcciones.add(Direccion.DERECHA);
+                direcciones.add(Direccion.IZQUIERDA);
+                return new Nube(posicion, direcciones.get(r.nextInt(direcciones.size())));
                 
             case GuerraAeronaves.ID_PICKUP_GASOLINA:
                 return new PickupGasolina(posicion);
@@ -242,7 +266,7 @@ public class Juego {
 
     // Actualiza las propiedades del avión en función de las teclas que 
     // presionó el usuario y el estado actual del juego.
-    private void detectarTeclas(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
+    /*private void detectarTeclasViejo(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
             , int TECLA_IZQUIERDA, int TECLA_DERECHA, int TECLA_DISPARAR) {
         if (avion != null) {
             if(Gdx.input.isKeyPressed(TECLA_ARRIBA)) {
@@ -274,6 +298,53 @@ public class Juego {
                 }               
             }
         }
+    }*/
+    
+    // Detecta las teclas que presionó el usuario.
+    private TeclasPresionadas detectarTeclas(int teclaArriba, int teclaDerecha, int teclaAbajo
+            , int teclaIzquierda, int teclaDisparar) {
+        
+        return new TeclasPresionadas(
+                  Gdx.input.isKeyPressed(teclaArriba)
+                , Gdx.input.isKeyPressed(teclaDerecha)
+                , Gdx.input.isKeyPressed(teclaAbajo)
+                , Gdx.input.isKeyPressed(teclaIzquierda)
+                , Gdx.input.isKeyPressed(teclaDisparar));
+    }
+    
+    // Aplica diferentes acciones al avión en función de las teclas que 
+    // fueron presionadas.
+    private void procesarTeclasPresionadas(Avion a, TeclasPresionadas tp) {
+        if (a != null) {
+            if(tp.isPresionadaTeclaArriba()) {
+                actualizarDireccionAvion(a, Direccion.ARRIBA);
+            }
+            
+            else if(tp.isPresionadaTeclaAbajo()) {
+                actualizarDireccionAvion(a, Direccion.ABAJO);
+            }
+            
+            else if(tp.isPresionadaTeclaIzquierda()) {
+                actualizarDireccionAvion(a, Direccion.IZQUIERDA);
+            }
+            
+            else if(tp.isPresionadaTeclaDerecha()) {
+                actualizarDireccionAvion(a, Direccion.DERECHA);
+            }
+            
+            if (tp.isPresionadaTeclaDisparar()) {
+                if (a.getMuniciones() > 0) {
+                    Proyectil p = new Proyectil(a.getDireccion(), a.getProximaPosicion(), a);
+                    a.setMuniciones(a.getMuniciones() - 1);
+                    Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
+                            , p.getPosicion().x, p.getPosicion().y);
+                    p.setPosition(posicionEnMapa.x, posicionEnMapa.y);
+                    moverElemento(p, GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES);
+                    elementos.add(p);
+                    stage.addActor(p);
+                }               
+            }
+        }        
     }
     
     // Remplaza el sprite del elemento por sprites de explosión durante un 
@@ -339,7 +410,16 @@ public class Juego {
     // Llamado cuando un elemento choca con una pared.
     private void alColisionarConPared(Elemento e) {
         if (e instanceof Nube) {
-
+            ArrayList<Direccion> dir = new ArrayList<Direccion>();
+            dir.add(Direccion.ABAJO);
+            dir.add(Direccion.ARRIBA);
+            dir.add(Direccion.DERECHA);
+            dir.add(Direccion.IZQUIERDA);
+            dir.remove(e.getDireccion());
+            
+            Random r = new Random();
+            
+            e.setProximaDireccion(dir.get(r.nextInt(dir.size())));
         }
         else {
             intentarDestruir(e, e.getVida());
@@ -455,8 +535,11 @@ public class Juego {
                     intentarDestruir(a, a.getVida());
                 }
                 else {
-                    a.setGasolina(a.getGasolina() - 1);
-                    actualizarPosicionAvion(a);                 
+                    //TO-DO: Quitar luego
+                    //if(a instanceof AvionAzul) {
+                        a.setGasolina(a.getGasolina() - 1);
+                        actualizarPosicionAvion(a);
+                    //}
                 }
             }
         }
@@ -495,7 +578,17 @@ public class Juego {
     }
     
     private void actualizarNubes(List<Nube> nubes) {
-        // TO-DO: movimiento de nubes
+        for (Nube nube : nubes) {
+            actualizarPosicionNube(nube);
+        }
+    }
+    
+    private void actualizarPosicionNube(Nube nube) {
+        nube.setPosicion(nube.getProximaPosicion());
+        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, nube.getPosicion().x, nube.getPosicion().y);
+        nube.setPosition(posicionActualMapa.x, posicionActualMapa.y);
+        nube.setDireccion(nube.getProximaDireccion());
+        moverElemento(nube, GuerraAeronaves.TICKS_ACTUALIZACION_NUBES);
     }
     
     private void moverElemento(Elemento e, int ticksVelocidad) {
