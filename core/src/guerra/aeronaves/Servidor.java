@@ -56,4 +56,8 @@ public class Servidor {
         return null;
     }
     
+    public boolean isConexionActiva() {
+        return !sc.isClosed();
+    }
+    
 }
