@@ -18,7 +18,7 @@ public class ClickListenerBotonJugar extends ClickListenerBoton {
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
         
-        FileHandle archivoConexion = Gdx.files.local("config/conexion.txt");
+        FileHandle archivoConexion = Gdx.files.local(GuerraAeronaves.RUTA_CONEXION_TECLAS_AMBIENTE);
         String datosConexion = archivoConexion.readString();
         Scanner sc = new Scanner(datosConexion);
         String ip = sc.next();

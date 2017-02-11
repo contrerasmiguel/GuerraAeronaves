@@ -103,8 +103,8 @@ public class Juego {
                     //detectarTeclasViejo(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
                     //procesarTeclasPresionadas(avionAzul, tpAvionAzul);                    
 
-                    /*TeclasPresionadas tpAvionAzul = servidorTeclas.recibirMensajeTeclas();
-                    procesarTeclasPresionadas(avionAzul, tpAvionAzul);*/
+                    TeclasPresionadas tpAvionAzul = servidorTeclas.recibirMensajeTeclas();
+                    procesarTeclasPresionadas(avionAzul, tpAvionAzul);
                     
                     TeclasPresionadas tpAvionRojo = detectarTeclas(
                               Keys.UP
@@ -119,9 +119,9 @@ public class Juego {
                     actualizarProyectiles(buscarProyectiles(elementos));
                 }
                 
-                /*if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
+                if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
                     actualizarAviones(buscarAviones(elementos));
-                }*/
+                }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_NUBES == 0) {
                     actualizarNubes(buscarNubes(elementos));
@@ -145,6 +145,7 @@ public class Juego {
         new Timer().scheduleTask(new Task() {
             @Override
             public void run() {
+                servidorTeclas.cerrarConexion();
                 if (juegoListener != null) {
                     if (a instanceof AvionAzul) {
                         juegoListener.alTerminar(Ganador.ROJO);

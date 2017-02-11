@@ -71,6 +71,10 @@ public class GuerraAeronaves extends Game {
             , "explosion5.png"
             , "explosion6.png");
        
+    public static final String 
+              RUTA_CONEXION_TECLAS_AGENTE = "config/ConexionTeclasAgente.txt"
+            , RUTA_CONEXION_TECLAS_AMBIENTE = "config/ConexionTeclasAmbiente.txt";    
+    
     @Override
     public void create () {
         batch = new SpriteBatch();
