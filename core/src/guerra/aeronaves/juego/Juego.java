@@ -429,6 +429,20 @@ public class Juego {
             
             Random r = new Random();
             
+            if(e.getProximaDireccion() == Direccion.ABAJO) {
+                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA); 
+                else dir.remove(Direccion.DERECHA);
+            } else if(e.getProximaDireccion() == Direccion.ARRIBA) {
+                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA); 
+                else dir.remove(Direccion.DERECHA);
+            } else if(e.getProximaDireccion() == Direccion.DERECHA) {
+                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA); 
+                else dir.remove(Direccion.ABAJO);
+            } else {
+                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA); 
+                else dir.remove(Direccion.ABAJO);
+            }
+            
             e.setProximaDireccion(dir.get(r.nextInt(dir.size())));
         }
         else {
