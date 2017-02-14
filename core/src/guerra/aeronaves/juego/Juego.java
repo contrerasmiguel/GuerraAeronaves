@@ -105,14 +105,14 @@ public class Juego {
 
                     TeclasPresionadas tpAvionAzul;
                     
-                    if (servidorTeclas.isConexionActiva()) {
+                    /*if (servidorTeclas.isConexionActiva()) {
                         //System.out.println("CONECTADO A AGENTE");
                         tpAvionAzul = servidorTeclas.recibirMensajeTeclas();
                     }
-                    else {
+                    else {*/
                         //System.out.println("NO CONECTADO A AGENTE");
                         tpAvionAzul = new TeclasPresionadas(false, false, false, false, false);
-                    }
+                    //}
                     procesarTeclasPresionadas(avionAzul, tpAvionAzul);
                     
                     TeclasPresionadas tpAvionRojo = detectarTeclas(

@@ -24,7 +24,7 @@ public class ClickListenerBotonVolverJugar extends ClickListenerBoton {
         String ip = sc.next();
         String port = sc.next();
         ser = new Servidor(Integer.parseInt(port));
-        ser.iniciarConexion();
+        //ser.iniciarConexion();
         
         guerraAeronaves.setScreenJuego(ser);
     }
