@@ -25,7 +25,8 @@ public class GuerraAeronaves extends Game {
             , VIDA_INFINITA = Float.POSITIVE_INFINITY
             , VIDA_PROYECTIL = 1
             , CANTIDAD_PICKUP_VIDA = VIDA_AVION / 3
-            , TIEMPO_EXPLOSION = 0.5f;
+            , TIEMPO_EXPLOSION = 0.5f
+            , TAMANO_CASILLA = 46;
     
     public static final int
               ALTURA_BOTON = 82
@@ -54,7 +55,7 @@ public class GuerraAeronaves extends Game {
             , ID_EXPLOSION = 71
             , MUNICIONES_AVION = 64
             , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3
-            , TICKS_DETECCION_TECLAS = 1
+            , TICKS_DETECCION_TECLAS = 10
             , TICKS_DETECCION_COLISIONES = 10
             , TICKS_ACTUALIZACION_AVIONES = 40
             , TICKS_ACTUALIZACION_PROYECTILES = 10

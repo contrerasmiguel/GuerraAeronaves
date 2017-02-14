@@ -9,6 +9,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
 import guerra.aeronaves.Servidor;
+import guerra.aeronaves.juego.HUD;
 import guerra.aeronaves.juego.JuegoListener;
 import java.util.Scanner;
 
@@ -17,6 +18,7 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
     private final Stage stage;
     private final Juego juego;
     private final GuerraAeronaves guerraAeronaves;
+    private final HUD h;
 
     public ScreenJuego(GuerraAeronaves guerraAeronaves, Servidor s) {
         this.guerraAeronaves = guerraAeronaves;
@@ -29,6 +31,8 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
         juego = new Juego(stage, leerMapa(), s);
         juego.setJuegoListener(this);
         juego.iniciar();
+        
+        h = new HUD(guerraAeronaves.batch, juego);
 
         Gdx.input.setInputProcessor(stage);
     }  
@@ -38,6 +42,14 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
         super.render(delta);
         stage.act(delta);
         stage.draw();
+        
+        guerraAeronaves.batch.setProjectionMatrix(h.getEstado().getCamera().combined);
+        
+        h.updateRojo(juego.getVidaAvionRojo(),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
+        //Quitar este comentario para habilitar el HUD del avión Azul
+        //h.updateAzul(juego.getVidaAvionRojo(),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
+        
+        h.getEstado().draw();
     }
     
     @Override

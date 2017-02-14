@@ -716,4 +716,28 @@ public class Juego {
         return centrosCasillas.get(idxCentro);
     }
     
+    public int getGasAvionRojo() {
+        return avionRojo.getGasolina();
+    }
+    
+    public float getVidaAvionRojo() {
+        return avionRojo.getVida();
+    }
+    
+     public int getMunicionAvionRojo() {
+        return avionRojo.getMuniciones();
+    }
+    
+    public int getGasAvionAzul() {
+        return avionAzul.getGasolina();
+    }
+    
+    public float getVidaAvionAzul() {
+        return avionAzul.getVida();
+    }
+    
+     public int getMunicionAvionAzul() {
+        return avionAzul.getMuniciones();
+    }
+    
 }
