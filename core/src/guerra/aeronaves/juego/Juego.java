@@ -184,9 +184,13 @@ public class Juego {
                 if (e != null) {
                     Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, j, i);
                     e.setPosition(posicionMapa.x, posicionMapa.y);
+                    
                     if (e instanceof Avion) {
-                        Avion a = (Avion)e;
-                        moverElemento(a, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);
+                        moverElemento(e, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);
+                    }
+                    
+                    else if (e instanceof Nube) {
+                        moverElemento(e, GuerraAeronaves.TICKS_ACTUALIZACION_NUBES);
                     }
                     
                     elementosMapa.add(e);                  
