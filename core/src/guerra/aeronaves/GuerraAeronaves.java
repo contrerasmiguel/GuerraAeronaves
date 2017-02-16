@@ -53,14 +53,15 @@ public class GuerraAeronaves extends Game {
             , ID_ESTACION_MUNICIONES_ROJO = 69
             , ID_ESTACION_MUNICIONES_AZUL = 70
             , ID_EXPLOSION = 71
-            , MUNICIONES_AVION = 64
+            , MUNICIONES_AVION = 30
             , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3
             , TICKS_DETECCION_TECLAS = 10
             , TICKS_DETECCION_COLISIONES = 10
             , TICKS_ACTUALIZACION_AVIONES = 40
             , TICKS_ACTUALIZACION_PROYECTILES = 10
             , TICKS_ACTUALIZACION_NUBES = 60
-            , GASOLINA_AVION = (int)Math.round(20 / (TICKS_ACTUALIZACION_AVIONES * TIEMPO_TICK))
+            , TICKS_COLOCAR_POWERUP = 500
+            , GASOLINA_AVION = (int)Math.round(60 / (TICKS_ACTUALIZACION_AVIONES * TIEMPO_TICK))
             , CANTIDAD_PICKUP_GASOLINA = GASOLINA_AVION / 3
             ;            
     

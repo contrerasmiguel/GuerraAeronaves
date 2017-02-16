@@ -45,7 +45,7 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
         
         guerraAeronaves.batch.setProjectionMatrix(h.getEstado().getCamera().combined);
         
-        h.updateRojo(juego.getVidaAvionRojo(),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
+        h.updateRojo(Math.round(juego.getVidaAvionRojo()),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
         //Quitar este comentario para habilitar el HUD del avión Azul
         //h.updateAzul(juego.getVidaAvionRojo(),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
         

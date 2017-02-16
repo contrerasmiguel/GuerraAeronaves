@@ -24,13 +24,13 @@ public class HUD {
         tabla.top();
         tabla.setFillParent(true);
         
-        lVidaRojo = new Label(String.format("%2f", GuerraAeronaves.VIDA_AVION), new Label.LabelStyle(new BitmapFont(), Color.RED));
-        lGasRojo = new Label(String.format("%3d", GuerraAeronaves.GASOLINA_AVION), new Label.LabelStyle(new BitmapFont(), Color.RED));
-        lMunRojo = new Label(String.format("%3d", GuerraAeronaves.MUNICIONES_AVION), new Label.LabelStyle(new BitmapFont(), Color.RED));
+        lVidaRojo = new Label(String.format("Vida: %2d", Math.round(GuerraAeronaves.VIDA_AVION)), new Label.LabelStyle(new BitmapFont(), Color.RED));
+        lGasRojo = new Label(String.format("Gasolina: %3d", GuerraAeronaves.GASOLINA_AVION), new Label.LabelStyle(new BitmapFont(), Color.RED));
+        lMunRojo = new Label(String.format("Municiones: %3d", GuerraAeronaves.MUNICIONES_AVION), new Label.LabelStyle(new BitmapFont(), Color.RED));
         
-        lVidaAzul = new Label(String.format("%2f", GuerraAeronaves.VIDA_AVION), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
-        lGasAzul = new Label(String.format("%3d", GuerraAeronaves.GASOLINA_AVION), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
-        lMunAzul = new Label(String.format("%3d", GuerraAeronaves.MUNICIONES_AVION), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+        lVidaAzul = new Label(String.format("Vida: %2d", Math.round(GuerraAeronaves.VIDA_AVION)), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+        lGasAzul = new Label(String.format("Gasolina: %3d", GuerraAeronaves.GASOLINA_AVION), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
+        lMunAzul = new Label(String.format("Municiones: %3d", GuerraAeronaves.MUNICIONES_AVION), new Label.LabelStyle(new BitmapFont(), Color.BLUE));
         
         tabla.add(lVidaRojo).expandX().padTop(10);
         tabla.add(lVidaAzul).expandX().padTop(10);
@@ -44,16 +44,16 @@ public class HUD {
         estado.addActor(tabla);
     }
     
-    public void updateRojo(float vd, int gas, int mn) {
-        lGasRojo.setText(String.format("%3d", gas));
-        lVidaRojo.setText(String.format("%2f", vd));
-        lMunRojo.setText(String.format("%3d", mn));
+    public void updateRojo(int vd, int gas, int mn) {
+        lGasRojo.setText(String.format("Gasolina: %3d", gas));
+        lVidaRojo.setText(String.format("Vida: %2d", vd));
+        lMunRojo.setText(String.format("Municiones: %3d", mn));
     }
     
-    public void updateAzul(float vd, int gas, int mn) {
-        lGasAzul.setText(String.format("%3d", gas));
-        lVidaAzul.setText(String.format("%2f", vd));
-        lMunAzul.setText(String.format("%3d", mn));
+    public void updateAzul(int vd, int gas, int mn) {
+        lGasAzul.setText(String.format("Gasolina: %3d", gas));
+        lVidaAzul.setText(String.format("Vida: %2d", vd));
+        lMunAzul.setText(String.format("Municiones: %3d", mn));
     }
     
     public Stage getEstado() {

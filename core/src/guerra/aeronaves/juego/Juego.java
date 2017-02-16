@@ -141,6 +141,10 @@ public class Juego {
                     // Elimina todos los elementos que fueron destruidos
                     procesarElementosAQuitar();
                 }
+                
+                if (ticks % GuerraAeronaves.TICKS_COLOCAR_POWERUP == 0) {
+                    crearElementoAleatorio(stage);
+                }
             }
         }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
     }
@@ -507,21 +511,38 @@ public class Juego {
     // avión pueda traspasar.
     private void colisionAvionElementoNoSolido(Avion a, Elemento e) {
         if (e instanceof PickupGasolina) {
-            a.setGasolina(a.getGasolina() + GuerraAeronaves.CANTIDAD_PICKUP_GASOLINA);
+            if(a.getGasolina() + GuerraAeronaves.CANTIDAD_PICKUP_GASOLINA <= GuerraAeronaves.GASOLINA_AVION)
+                a.setGasolina(a.getGasolina() + GuerraAeronaves.CANTIDAD_PICKUP_GASOLINA);
+            else {
+                if(a.getGasolina() <= GuerraAeronaves.GASOLINA_AVION)
+                a.setGasolina(GuerraAeronaves.GASOLINA_AVION);
+            }
             elementosAQuitar.add(e);
         }
         else if (e instanceof PickupMuniciones) {
-            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_MUNICIONES);
+            if(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_MUNICIONES <= GuerraAeronaves.MUNICIONES_AVION)
+                a.setMuniciones(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_MUNICIONES);
+            else {
+                if(a.getMuniciones() <= GuerraAeronaves.MUNICIONES_AVION)
+                a.setMuniciones(GuerraAeronaves.MUNICIONES_AVION);
+            }
             elementosAQuitar.add(e);
         }
         else if (e instanceof PickupVida) {
-            a.setVida(a.getVida() + GuerraAeronaves.CANTIDAD_PICKUP_VIDA);
+            if(a.getVida() + GuerraAeronaves.CANTIDAD_PICKUP_VIDA <= GuerraAeronaves.VIDA_AVION)
+                a.setVida(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_VIDA);
+            else {
+                if(a.getVida() <= GuerraAeronaves.VIDA_AVION)
+                a.setVida(GuerraAeronaves.VIDA_AVION);
+            }
             elementosAQuitar.add(e);
         }
         else if (e instanceof PowerupMuniciones) {
+            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.CANTIDAD_PICKUP_MUNICIONES);
             elementosAQuitar.add(e);
         }
         else if (e instanceof PowerupVida) {
+            a.setVida(a.getVida() + GuerraAeronaves.CANTIDAD_PICKUP_VIDA);
             elementosAQuitar.add(e);
         }
         else if (a instanceof AvionAzul) {
@@ -534,21 +555,25 @@ public class Juego {
     
     // Verifica si hubo colisión con alguna de las estaciones del avión azul.
     private void colisionAvionElementoNoSolido(AvionAzul a, Elemento e) { 
-        if (e instanceof EstacionGasolinaAzul) {
-            a.setGasolina(a.getGasolina() + GuerraAeronaves.GASOLINA_AVION);
+        if (e instanceof EstacionGasolinaRojo) {
+            if(a.getGasolina() < GuerraAeronaves.GASOLINA_AVION)
+                a.setGasolina(GuerraAeronaves.GASOLINA_AVION);
         }
-        else if (e instanceof EstacionMunicionesAzul) {
-            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.MUNICIONES_AVION);
-        }
+        else if (e instanceof EstacionMunicionesRojo) {
+            if(a.getMuniciones() < GuerraAeronaves.MUNICIONES_AVION)
+                a.setMuniciones(GuerraAeronaves.MUNICIONES_AVION);
+        }  
     }    
     
     // Verifica si hubo colisión con alguna de las estaciones del avión rojo.
     private void colisionAvionElementoNoSolido(AvionRojo a, Elemento e) { 
         if (e instanceof EstacionGasolinaRojo) {
-            a.setGasolina(a.getGasolina() + GuerraAeronaves.GASOLINA_AVION);
+            if(a.getGasolina() < GuerraAeronaves.GASOLINA_AVION)
+                a.setGasolina(GuerraAeronaves.GASOLINA_AVION);
         }
         else if (e instanceof EstacionMunicionesRojo) {
-            a.setMuniciones(a.getMuniciones() + GuerraAeronaves.MUNICIONES_AVION);
+            if(a.getMuniciones() < GuerraAeronaves.MUNICIONES_AVION)
+                a.setMuniciones(GuerraAeronaves.MUNICIONES_AVION);
         }        
     }
     
@@ -754,4 +779,34 @@ public class Juego {
         return avionAzul.getMuniciones();
     }
     
+     //Selecciona aleatoriamente un Power Up y lo coloca en el mapa en una posición aleatoria.
+     public void crearElementoAleatorio(Stage estado) {
+         Random r = new Random();
+         Elemento e;
+         ArrayList<Point> disponibles = obtenerCasillasDisponibles();
+         List<Elemento> n = new ArrayList<Elemento>();
+         int aux = r.nextInt(disponibles.size()-1);
+         if(r.nextInt(2) == 0) {
+             e = crearElemento(GuerraAeronaves.ID_POWERUP_VIDA,disponibles.get(aux));
+         } else {
+             e = crearElemento(GuerraAeronaves.ID_POWERUP_MUNICIONES,disponibles.get(aux));
+         }
+         Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, disponibles.get(aux).x, disponibles.get(aux).y);
+         e.setPosition(posicionMapa.x, posicionMapa.y);
+         n.add(e);
+         agregarElementos(estado,n);
+     }
+     
+     //Obtiene la posicion de las casillas que son "cielo".
+     private ArrayList<Point> obtenerCasillasDisponibles() {
+         ArrayList<Point> cielos = new ArrayList<Point>();
+         for (int i = 0; i < matrizMapa.length; ++i) {
+            for (int j = 0; j < matrizMapa[0].length; ++j) {
+                if(matrizMapa[i][j] == 0) {
+                    cielos.add(new Point(j, i));
+                }
+            }
+         }
+         return cielos;
+     }
 }
