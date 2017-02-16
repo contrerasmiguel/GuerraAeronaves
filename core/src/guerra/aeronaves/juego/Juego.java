@@ -277,42 +277,6 @@ public class Juego {
             }
         }
     }
-
-    // Actualiza las propiedades del avión en función de las teclas que 
-    // presionó el usuario y el estado actual del juego.
-    /*private void detectarTeclasViejo(final Avion avion, int TECLA_ARRIBA, int TECLA_ABAJO
-            , int TECLA_IZQUIERDA, int TECLA_DERECHA, int TECLA_DISPARAR) {
-        if (avion != null) {
-            if(Gdx.input.isKeyPressed(TECLA_ARRIBA)) {
-                actualizarDireccionAvion(avion, Direccion.ARRIBA);
-            }
-            
-            else if(Gdx.input.isKeyPressed(TECLA_ABAJO)) {
-                actualizarDireccionAvion(avion, Direccion.ABAJO);
-            }
-            
-            else if(Gdx.input.isKeyPressed(TECLA_IZQUIERDA)) {
-                actualizarDireccionAvion(avion, Direccion.IZQUIERDA);
-            }
-            
-            else if(Gdx.input.isKeyPressed(TECLA_DERECHA)) {
-                actualizarDireccionAvion(avion, Direccion.DERECHA);
-            }
-            
-            if (Gdx.input.isKeyPressed(TECLA_DISPARAR)) {
-                if (avion.getMuniciones() > 0) {
-                    Proyectil p = new Proyectil(avion.getDireccion(), avion.getProximaPosicion(), avion);
-                    avion.setMuniciones(avion.getMuniciones() - 1);
-                    Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
-                            , p.getPosicion().x, p.getPosicion().y);
-                    p.setPosition(posicionEnMapa.x, posicionEnMapa.y);
-                    moverElemento(p, GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES);
-                    elementos.add(p);
-                    stage.addActor(p);
-                }               
-            }
-        }
-    }*/
     
     // Detecta las teclas que presionó el usuario.
     private TeclasPresionadas detectarTeclas(int teclaArriba, int teclaDerecha, int teclaAbajo
@@ -793,8 +757,11 @@ public class Juego {
          }
          Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, disponibles.get(aux).x, disponibles.get(aux).y);
          e.setPosition(posicionMapa.x, posicionMapa.y);
-         n.add(e);
+         n.add(e);        
          agregarElementos(estado,n);
+         
+         // Es necesario agregar el elemento a la lista global de elementos
+         elementos.add(e);
      }
      
      //Obtiene la posicion de las casillas que son "cielo".
