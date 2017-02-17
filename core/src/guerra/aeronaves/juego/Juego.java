@@ -1,5 +1,6 @@
 package guerra.aeronaves.juego;
 
+import guerra.aeronaves.comunicacion.TeclasPresionadas;
 import guerra.aeronaves.juego.elementos.Elemento;
 import guerra.aeronaves.juego.elementos.AvionRojo;
 import com.badlogic.gdx.Gdx;
@@ -18,7 +19,6 @@ import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
-import guerra.aeronaves.Servidor;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
@@ -64,17 +64,16 @@ public class Juego {
     private final Timer timer;
     private long ticks;
     
-    private final Servidor servidorTeclas;
-    
-    public Juego(Stage stage, int matrizMapa[][], Servidor s) {
+    private final Image fondo;
+       
+    public Juego(Stage stage, int matrizMapa[][]) {
         this.stage = stage;
         this.matrizMapa = matrizMapa;
-        Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
+        fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));
         sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
         
         fondo.setFillParent(true);
-        stage.addActor(fondo);
         
         centrosCasillas = obtenerCentrosCasillas();
         elementos = crearElementosMapa();
@@ -83,16 +82,13 @@ public class Juego {
         avionAzul = buscarAvionAzul(elementos);
         avionRojo = buscarAvionRojo(elementos);
         
-        agregarElementos(stage, elementos);
         stage.addActor(fondo);
+        agregarElementos(stage, elementos);
         
         timer = new Timer();
         ticks = 0;
-        
-        servidorTeclas = s;
     }
     
-    // Inicia el reloj del juego.
     public void iniciar() {
         timer.scheduleTask(new Task() {
             @Override
@@ -100,19 +96,12 @@ public class Juego {
                 ticks = (ticks == Long.MAX_VALUE) ? 0 : ticks + 1;
                 
                 if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {                    
-                    //detectarTeclasViejo(avionRojo, Keys.UP, Keys.DOWN, Keys.LEFT, Keys.RIGHT, Keys.CONTROL_RIGHT);
-                    //procesarTeclasPresionadas(avionAzul, tpAvionAzul);                    
-
-                    TeclasPresionadas tpAvionAzul;
-                    
-                    /*if (servidorTeclas.isConexionActiva()) {
-                        //System.out.println("CONECTADO A AGENTE");
-                        tpAvionAzul = servidorTeclas.recibirMensajeTeclas();
-                    }
-                    else {*/
-                        //System.out.println("NO CONECTADO A AGENTE");
-                        tpAvionAzul = new TeclasPresionadas(false, false, false, false, false);
-                    //}
+                    TeclasPresionadas tpAvionAzul = detectarTeclas(
+                              Keys.W
+                            , Keys.D
+                            , Keys.S
+                            , Keys.A
+                            , Keys.SPACE);
                     procesarTeclasPresionadas(avionAzul, tpAvionAzul);
                     
                     TeclasPresionadas tpAvionRojo = detectarTeclas(
@@ -146,9 +135,8 @@ public class Juego {
                     crearElementoAleatorio(stage);
                 }
             }
-        }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
+        }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);        
     }
-    
 
     // Realiza las tareas antes de terminar el juego y dispara el evento 
     // del listener correspondiente.
@@ -158,7 +146,6 @@ public class Juego {
         new Timer().scheduleTask(new Task() {
             @Override
             public void run() {
-                servidorTeclas.cerrarConexion();
                 if (juegoListener != null) {
                     if (a instanceof AvionAzul) {
                         juegoListener.alTerminar(Ganador.ROJO);

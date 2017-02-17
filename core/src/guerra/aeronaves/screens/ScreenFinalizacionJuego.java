@@ -35,7 +35,7 @@ public class ScreenFinalizacionJuego extends ScreenAdapter {
         
         ImageButton btnVolverJugar = agregarBoton("boton_volver_jugar.png");
         btnVolverJugar.setY(180);
-        btnVolverJugar.addListener(new ClickListenerBotonVolverJugar(guerraAeronaves));
+        btnVolverJugar.addListener(new ClickListenerBotonJugar(guerraAeronaves));
         
         ImageButton btnVolverMenu = agregarBoton("boton_volver_menu.png");
         btnVolverMenu.setY(80);
