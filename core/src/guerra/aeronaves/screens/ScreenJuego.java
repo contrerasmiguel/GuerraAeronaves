@@ -28,7 +28,7 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
                 , GuerraAeronaves.calcularTamañoCasilla(Gdx.graphics.getWidth()
                         , Gdx.graphics.getHeight()) * GuerraAeronaves.NUM_FILAS));
         
-        juego = new Juego(stage, leerMapa());
+        juego = new Juego(stage, leerMapa(), conexion);
         juego.setJuegoListener(this);
         juego.iniciar();
         

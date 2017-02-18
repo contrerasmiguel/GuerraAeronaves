@@ -26,9 +26,9 @@ public class ScreenConexion extends ScreenMenu implements ConexionListener {
     // Este método no es llamado en el hilo principal.
     @Override
     public void alEstablecerConexion() {
-        guerraAeronaves.setScreenJuego();     
         System.out.println("Ambiente conectado a " + conexion.getDatosConexion().getHostCliente()
                 + ":" + conexion.getDatosConexion().getPuertoCliente() + ".");  
+        guerraAeronaves.setScreenJuego();
     }
 
 }

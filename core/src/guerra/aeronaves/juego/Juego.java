@@ -19,6 +19,11 @@ import com.badlogic.gdx.utils.Timer.Task;
 import guerra.aeronaves.Direccion;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
+import guerra.aeronaves.comunicacion.ClienteListener;
+import guerra.aeronaves.comunicacion.Conexion;
+import guerra.aeronaves.comunicacion.DatosAgente;
+import guerra.aeronaves.comunicacion.DatosAmbiente;
+import guerra.aeronaves.comunicacion.DatosExplosion;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
@@ -46,7 +51,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import static java.util.stream.Collectors.toList;
 
-public class Juego {
+public class Juego implements ClienteListener {
     
     private final Stage stage;
     private final List<Elemento> elementos;
@@ -64,16 +69,18 @@ public class Juego {
     private final Timer timer;
     private long ticks;
     
-    private final Image fondo;
+    private final Conexion conexion;
+    
+    private final List<DatosExplosion> explosiones;
        
-    public Juego(Stage stage, int matrizMapa[][]) {
+    public Juego(Stage stage, int matrizMapa[][], Conexion conexion) {
         this.stage = stage;
         this.matrizMapa = matrizMapa;
-        fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
-                Gdx.files.internal("cielo1.png")))));
-        sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
         
-        fondo.setFillParent(true);
+        this.conexion = conexion;
+        conexion.getCliente().getListeners().add(this);
+        
+        sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
         
         centrosCasillas = obtenerCentrosCasillas();
         elementos = crearElementosMapa();
@@ -82,11 +89,17 @@ public class Juego {
         avionAzul = buscarAvionAzul(elementos);
         avionRojo = buscarAvionRojo(elementos);
         
+        Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
+                Gdx.files.internal("cielo1.png")))));        
+        fondo.setFillParent(true);
         stage.addActor(fondo);
+        
         agregarElementos(stage, elementos);
         
         timer = new Timer();
         ticks = 0;
+        
+        explosiones = new ArrayList<DatosExplosion>();
     }
     
     public void iniciar() {
@@ -95,16 +108,11 @@ public class Juego {
             @Override
             public void run() {
                 ticks = (ticks == Long.MAX_VALUE) ? 0 : ticks + 1;
+                if (ticks % GuerraAeronaves.TICKS_SOLICITUD_DATOS_AGENTE == 0) {
+                    conexion.getCliente().solicitarDatosAgente();
+                }
                 
-                if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {                    
-                    TeclasPresionadas tpAvionAzul = detectarTeclas(
-                              Keys.W
-                            , Keys.D
-                            , Keys.S
-                            , Keys.A
-                            , Keys.SPACE);
-                    procesarTeclasPresionadas(avionAzul, tpAvionAzul);
-                    
+                if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {                  
                     TeclasPresionadas tpAvionRojo = detectarTeclas(
                               Keys.UP
                             , Keys.RIGHT
@@ -119,7 +127,7 @@ public class Juego {
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
-                    //actualizarAviones(buscarAviones(elementos));
+                    actualizarAviones(buscarAviones(elementos));
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_NUBES == 0) {
@@ -136,11 +144,23 @@ public class Juego {
                     crearElementoAleatorio(stage);
                 }
                 
-                if (ticks % 100 == 0) {
-                    System.out.println("SE ESTÁ EJECUTANDO LA TAREA");
-                }
+                if (ticks % GuerraAeronaves.TICKS_ENVIO_DATOS_AMBIENTE == 0) {
+                    conexion.getServidor().enviarDatosAlAgente(new DatosAmbiente( 
+                              buscarElementosVisibles(elementos)
+                            , explosiones
+                    ));
+                    explosiones.clear();
+                }       
             }
         }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
+    }
+
+    // Cuando recibe las decisiones del agente.
+    @Override
+    public void alRecibirDatosServidor(Object datosServidor) {
+        TeclasPresionadas tpAvionAzul = ((DatosAgente)datosServidor)
+                .getTeclasPresionadas();
+        procesarTeclasPresionadas(avionAzul, tpAvionAzul);
     }
 
     // Realiza las tareas antes de terminar el juego y dispara el evento 
@@ -174,13 +194,12 @@ public class Juego {
                 Elemento e = crearElemento(matrizMapa[i][j], new Point(j, i));
                                
                 if (e != null) {
-                    Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, j, i);
-                    e.setPosition(posicionMapa.x, posicionMapa.y);
+                    posicionarElementoMapa(e);
                     
                     if (e instanceof Avion) {
                         moverElemento(e, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);
                     }
-                    
+
                     else if (e instanceof Nube) {
                         moverElemento(e, GuerraAeronaves.TICKS_ACTUALIZACION_NUBES);
                     }
@@ -190,6 +209,12 @@ public class Juego {
             }
         }
         return elementosMapa;
+    }
+    
+    private void posicionarElementoMapa(Elemento e) {
+        Vector2 posicionMapa = calcularPosicionMapa(GuerraAeronaves.NUM_FILAS, GuerraAeronaves.NUM_COLUMNAS
+                , centrosCasillas, e.getPosicion().x, e.getPosicion().y);
+        e.setPosition(posicionMapa.x, posicionMapa.y);
     }
 
     // Método que recibe el ID de un tipo de elemento y una posición 
@@ -310,7 +335,7 @@ public class Juego {
                 if (a.getMuniciones() > 0) {
                     Proyectil p = new Proyectil(a.getDireccion(), a.getProximaPosicion(), a);
                     a.setMuniciones(a.getMuniciones() - 1);
-                    Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
+                    Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa.length, matrizMapa[0].length, centrosCasillas
                             , p.getPosicion().x, p.getPosicion().y);
                     p.setPosition(posicionEnMapa.x, posicionEnMapa.y);
                     moverElemento(p, GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES);
@@ -323,13 +348,13 @@ public class Juego {
     
     // Remplaza el sprite del elemento por sprites de explosión durante un 
     // tiempo en segundos.
-    private void crearExplosion(Point posicion, float tiempo) {
-        final float tiempoSprite = tiempo / 6;
+    private void crearExplosion(DatosExplosion de) {
+        final float tiempoSprite = de.getTiempo() / 6;
         final ArrayDeque<String> rutaExplosiones = new ArrayDeque<String>(
                 GuerraAeronaves.RUTA_EXPLOSIONES);
-        Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa
-                , centrosCasillas, posicion.x, posicion.y);
-        final Explosion explosion = new Explosion(rutaExplosiones.pop(), posicion);
+        Vector2 posicionEnMapa = calcularPosicionMapa(matrizMapa.length, matrizMapa[0].length
+                , centrosCasillas, de.getPosicion().x, de.getPosicion().y);
+        final Explosion explosion = new Explosion(rutaExplosiones.pop(), de.getPosicion());
         
         stage.addActor(explosion);
         explosion.setPosition(posicionEnMapa.x, posicionEnMapa.y);
@@ -345,7 +370,7 @@ public class Juego {
                     stage.getActors().removeValue(explosion, true);
                 }
             }
-        }, 0, tiempoSprite, GuerraAeronaves.RUTA_EXPLOSIONES.size() + 1);        
+        }, 0, tiempoSprite, GuerraAeronaves.RUTA_EXPLOSIONES.size() + 1);
     }
 
     public void setJuegoListener(JuegoListener jl) {
@@ -393,18 +418,23 @@ public class Juego {
             
             Random r = new Random();
             
-            if(e.getProximaDireccion() == Direccion.ABAJO) {
-                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA); 
-                else dir.remove(Direccion.DERECHA);
-            } else if(e.getProximaDireccion() == Direccion.ARRIBA) {
-                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA); 
-                else dir.remove(Direccion.DERECHA);
-            } else if(e.getProximaDireccion() == Direccion.DERECHA) {
-                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA); 
-                else dir.remove(Direccion.ABAJO);
-            } else {
-                if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA); 
-                else dir.remove(Direccion.ABAJO);
+            if(null != e.getProximaDireccion()) switch (e.getProximaDireccion()) {
+                case ABAJO:
+                    if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA);
+                    else dir.remove(Direccion.DERECHA);
+                    break;
+                case ARRIBA:
+                    if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.IZQUIERDA);
+                    else dir.remove(Direccion.DERECHA);
+                    break;
+                case DERECHA:
+                    if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA);
+                    else dir.remove(Direccion.ABAJO);
+                    break;
+                default:
+                    if (r.nextInt(dir.size()) % 2 == 0) dir.remove(Direccion.ARRIBA);
+                    else dir.remove(Direccion.ABAJO);
+                    break;
             }
             
             e.setProximaDireccion(dir.get(r.nextInt(dir.size())));
@@ -445,7 +475,10 @@ public class Juego {
     private void intentarDestruir(Elemento e, float daño) {
         e.setVida(e.getVida() - daño);
         if (e.getVida() <= 0) {
-            crearExplosion(e.getPosicion(), GuerraAeronaves.TIEMPO_EXPLOSION);
+            DatosExplosion de = new DatosExplosion(e.getPosicion()
+                    , GuerraAeronaves.TIEMPO_EXPLOSION);
+            explosiones.add(de);
+            crearExplosion(de);
             
             // Si es un avión, significa que uno de los jugadores perdió.
             if (e instanceof Avion) {
@@ -567,7 +600,7 @@ public class Juego {
     
     private void actualizarPosicionAvion(Avion a) {
         a.setPosicion(a.getProximaPosicion());
-        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, a.getPosicion().x, a.getPosicion().y);
+        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa.length, matrizMapa[0].length, centrosCasillas, a.getPosicion().x, a.getPosicion().y);
         a.setPosition(posicionActualMapa.x, posicionActualMapa.y);
         a.setDireccion(a.getProximaDireccion());
         moverElemento(a, GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES);        
@@ -594,14 +627,15 @@ public class Juego {
     
     private void actualizarPosicionNube(Nube nube) {
         nube.setPosicion(nube.getProximaPosicion());
-        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, nube.getPosicion().x, nube.getPosicion().y);
+        Vector2 posicionActualMapa = calcularPosicionMapa(matrizMapa.length, matrizMapa[0].length, centrosCasillas, nube.getPosicion().x, nube.getPosicion().y);
         nube.setPosition(posicionActualMapa.x, posicionActualMapa.y);
         nube.setDireccion(nube.getProximaDireccion());
         moverElemento(nube, GuerraAeronaves.TICKS_ACTUALIZACION_NUBES);
     }
     
     private void moverElemento(Elemento e, int ticksVelocidad) {
-        Vector2 proximaPosicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas
+        Vector2 proximaPosicionMapa = calcularPosicionMapa(GuerraAeronaves.NUM_FILAS
+                , GuerraAeronaves.NUM_COLUMNAS, centrosCasillas
                 , e.getProximaPosicion().x, e.getProximaPosicion().y);
         e.addAction(Actions.moveTo(proximaPosicionMapa.x, proximaPosicionMapa.y
                 , ticksVelocidad * GuerraAeronaves.TIEMPO_TICK));        
@@ -702,16 +736,23 @@ public class Juego {
         return null;
     }
     
-    private Vector2 calcularPosicionMapa(int[][] matrizMapa
+    // Devuelve una lista con todos los elementos que serían visibles a un 
+    // agente
+    private List<Elemento> buscarElementosVisibles(List<Elemento> es) {
+        List<Elemento> elementosVisibles = new ArrayList(es);
+        return elementosVisibles;
+    }
+    
+    private Vector2 calcularPosicionMapa(int numFilasMapa, int numColumnasMapa
             , List<Vector2> centrosCasillas, int columna, int fila) {
         
         columna = Math.max(0, columna);
-        columna = Math.min(matrizMapa[0].length - 1, columna);
+        columna = Math.min(numColumnasMapa - 1, columna);
         
         fila = Math.max(0, fila);
-        fila = Math.min(matrizMapa.length - 1, fila);
+        fila = Math.min(numFilasMapa - 1, fila);
         
-        int idxCentro = (matrizMapa.length - 1 - fila) * matrizMapa[0].length + columna;
+        int idxCentro = (numFilasMapa - 1 - fila) * numColumnasMapa + columna;
         return centrosCasillas.get(idxCentro);
     }
     
@@ -751,7 +792,7 @@ public class Juego {
          } else {
              e = crearElemento(GuerraAeronaves.ID_POWERUP_MUNICIONES,disponibles.get(aux));
          }
-         Vector2 posicionMapa = calcularPosicionMapa(matrizMapa, centrosCasillas, disponibles.get(aux).x, disponibles.get(aux).y);
+         Vector2 posicionMapa = calcularPosicionMapa(matrizMapa.length, matrizMapa[0].length, centrosCasillas, disponibles.get(aux).x, disponibles.get(aux).y);
          e.setPosition(posicionMapa.x, posicionMapa.y);
          n.add(e);        
          agregarElementos(estado,n);
