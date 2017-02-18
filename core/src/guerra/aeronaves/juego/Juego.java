@@ -90,6 +90,7 @@ public class Juego {
     }
     
     public void iniciar() {
+        timer.clear();
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
@@ -110,7 +111,7 @@ public class Juego {
                             , Keys.DOWN
                             , Keys.LEFT
                             , Keys.CONTROL_RIGHT);
-                    procesarTeclasPresionadas(avionRojo, tpAvionRojo);                             
+                    procesarTeclasPresionadas(avionRojo, tpAvionRojo);
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES == 0) {
@@ -118,7 +119,7 @@ public class Juego {
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES == 0) {
-                    actualizarAviones(buscarAviones(elementos));
+                    //actualizarAviones(buscarAviones(elementos));
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_NUBES == 0) {
@@ -134,8 +135,12 @@ public class Juego {
                 if (ticks % GuerraAeronaves.TICKS_COLOCAR_POWERUP == 0) {
                     crearElementoAleatorio(stage);
                 }
+                
+                if (ticks % 100 == 0) {
+                    System.out.println("SE ESTÁ EJECUTANDO LA TAREA");
+                }
             }
-        }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);        
+        }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
     }
 
     // Realiza las tareas antes de terminar el juego y dispara el evento 
@@ -767,4 +772,9 @@ public class Juego {
          }
          return cielos;
      }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
 }

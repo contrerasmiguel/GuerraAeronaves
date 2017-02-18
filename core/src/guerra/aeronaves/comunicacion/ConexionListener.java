@@ -1,6 +1,6 @@
 package guerra.aeronaves.comunicacion;
 
-public interface ConexionAmbienteListener {
+public interface ConexionListener {
     
     public void alEstablecerConexion();
     

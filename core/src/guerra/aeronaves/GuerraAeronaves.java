@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import guerra.aeronaves.comunicacion.ConexionAmbiente;
+import guerra.aeronaves.comunicacion.Conexion;
 import guerra.aeronaves.comunicacion.DatosConexion;
 import guerra.aeronaves.screens.*;
 import java.util.Arrays;
@@ -18,7 +18,7 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    private ConexionAmbiente conexionAmbiente;
+    private Conexion conexion;
     
     public static final float 
               TIEMPO_TICK = 0.010f
@@ -87,10 +87,8 @@ public class GuerraAeronaves extends Game {
         music_edicion = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_edicion.mp3"));
         music_juego = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_juego.mp3"));    
         
-        DatosConexion dc = DatosConexion.crearDesdeArchivoConfiguracion(
-                GuerraAeronaves.RUTA_CONFIGURACION_CONEXION_AMBIENTE);
-        
-        conexionAmbiente = new ConexionAmbiente(dc.getHost(), dc.getPuerto());        
+        conexion = new Conexion(DatosConexion.crearDesdeArchivoConfiguracion(
+                GuerraAeronaves.RUTA_CONFIGURACION_CONEXION_AMBIENTE));
         
         setScreenMenuPrincipal();
     }
@@ -111,12 +109,12 @@ public class GuerraAeronaves extends Game {
     }
     
     public void setScreenConexion() {
-        setScreen(new ScreenConexion(this, conexionAmbiente));
+        setScreen(new ScreenConexion(this, conexion));
         setMusica(music_menu);
     }
 
     public void setScreenJuego() {
-        setScreen(new ScreenJuego(this, conexionAmbiente));
+        setScreen(new ScreenJuego(this, conexion));
         setMusica(music_juego);        
     }    
     

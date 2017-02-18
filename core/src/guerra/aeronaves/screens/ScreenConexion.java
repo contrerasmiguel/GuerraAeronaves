@@ -1,34 +1,34 @@
 package guerra.aeronaves.screens;
 
 import guerra.aeronaves.GuerraAeronaves;
-import guerra.aeronaves.comunicacion.ConexionAmbiente;
-import guerra.aeronaves.comunicacion.ConexionAmbienteListener;
+import guerra.aeronaves.comunicacion.Conexion;
+import guerra.aeronaves.comunicacion.ConexionListener;
 
-public class ScreenConexion extends ScreenMenu implements ConexionAmbienteListener {
+public class ScreenConexion extends ScreenMenu implements ConexionListener {
 
     private final GuerraAeronaves guerraAeronaves;
-    private final ConexionAmbiente conexionAmbiente;
+    private final Conexion conexion;
 
-    public ScreenConexion(GuerraAeronaves guerraAeronaves, ConexionAmbiente ca) {
+    public ScreenConexion(GuerraAeronaves guerraAeronaves, Conexion conexion) {
         this.guerraAeronaves = guerraAeronaves;
-        this.conexionAmbiente = ca;
+        this.conexion = conexion;
         
-        conexionAmbiente.getListeners().clear();
+        conexion.getListeners().clear();
         
         // Para el callback alEstablecerConexiones
-        conexionAmbiente.getListeners().add(this);
+        conexion.getListeners().add(this);
         
-        System.out.println("Ambiente conectándose a " + conexionAmbiente.getHost() 
-                + ":" + conexionAmbiente.getPuerto() + "...");        
-        conexionAmbiente.iniciar();
+        System.out.println("Ambiente conectándose a " + conexion.getDatosConexion().getHostCliente()
+                + ":" + conexion.getDatosConexion().getPuertoCliente() + "...");        
+        conexion.iniciar();
     }
     
     // Este método no es llamado en el hilo principal.
     @Override
     public void alEstablecerConexion() {
-        guerraAeronaves.setScreenJuego();
-        System.out.println("Ambiente conectado a " + conexionAmbiente
-                .getHost() + ":" + conexionAmbiente.getPuerto() + ".");
+        guerraAeronaves.setScreenJuego();     
+        System.out.println("Ambiente conectado a " + conexion.getDatosConexion().getHostCliente()
+                + ":" + conexion.getDatosConexion().getPuertoCliente() + ".");  
     }
 
 }
