@@ -84,8 +84,16 @@ public class Juego implements ClienteListener {
         elementos = crearElementosMapa();
         elementosAQuitar = new ArrayList<Elemento>();
         
-        avionAzul = buscarAvionAzul(elementos);
-        avionRojo = buscarAvionRojo(elementos);
+        AvionAzul aa = buscarAvionAzul(elementos);
+        AvionRojo ar = buscarAvionRojo(elementos);
+        
+        avionAzul = (aa != null)
+                ? aa
+                : new AvionAzul(new Point(0, 0), Direccion.ARRIBA);
+        
+        avionRojo = (ar != null)
+                ? ar
+                : new AvionRojo(new Point(0, 0), Direccion.ARRIBA);
         
         Image fondo = new Image(new SpriteDrawable(new Sprite(new Texture(
                 Gdx.files.internal("cielo1.png")))));        
@@ -756,7 +764,7 @@ public class Juego implements ClienteListener {
         return avionRojo.getVida();
     }
     
-     public int getMunicionAvionRojo() {
+    public int getMunicionAvionRojo() {
         return avionRojo.getMuniciones();
     }
     
@@ -768,7 +776,7 @@ public class Juego implements ClienteListener {
         return avionAzul.getVida();
     }
     
-     public int getMunicionAvionAzul() {
+    public int getMunicionAvionAzul() {
         return avionAzul.getMuniciones();
     }
     

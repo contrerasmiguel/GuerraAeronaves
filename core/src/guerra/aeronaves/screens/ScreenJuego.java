@@ -52,7 +52,7 @@ public class ScreenJuego extends ScreenAdapter implements JuegoListener {
         
         h.updateRojo(Math.round(juego.getVidaAvionRojo()),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
         //Quitar este comentario para habilitar el HUD del avión Azul
-        //h.updateAzul(juego.getVidaAvionRojo(),juego.getGasAvionRojo(), juego.getMunicionAvionRojo());
+        h.updateAzul(Math.round(juego.getVidaAvionAzul()),juego.getGasAvionAzul(), juego.getMunicionAvionAzul());
         
         h.getEstado().draw();
     }
