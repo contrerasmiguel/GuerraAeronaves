@@ -63,7 +63,7 @@ public class GuerraAeronaves extends Game {
             , TICKS_ENVIO_DATOS_AMBIENTE = 5
             , TICKS_DETECCION_TECLAS = 10
             , TICKS_DETECCION_COLISIONES = 10
-            , TICKS_ACTUALIZACION_AVIONES = 40
+            , TICKS_ACTUALIZACION_AVIONES = 400
             , TICKS_ACTUALIZACION_PROYECTILES = 10
             , TICKS_ACTUALIZACION_NUBES = 200
             , TICKS_COLOCAR_POWERUP = 500

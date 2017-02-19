@@ -739,8 +739,7 @@ public class Juego implements ClienteListener {
     // Devuelve una lista con todos los elementos que serían visibles a un 
     // agente
     private List<Elemento> buscarElementosVisibles(List<Elemento> es) {
-        List<Elemento> elementosVisibles = new ArrayList(es);
-        return elementosVisibles;
+        return es;
     }
     
     private Vector2 calcularPosicionMapa(int numFilasMapa, int numColumnasMapa
