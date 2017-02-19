@@ -20,10 +20,10 @@ import guerra.aeronaves.Direccion;
 import guerra.aeronaves.Ganador;
 import guerra.aeronaves.GuerraAeronaves;
 import guerra.aeronaves.comunicacion.ClienteListener;
-import guerra.aeronaves.comunicacion.Conexion;
-import guerra.aeronaves.comunicacion.DatosAgente;
-import guerra.aeronaves.comunicacion.DatosAmbiente;
 import guerra.aeronaves.comunicacion.DatosExplosion;
+import guerra.aeronaves.comunicacion.PaqueteDatos;
+import guerra.aeronaves.comunicacion.PaqueteDatosAgente;
+import guerra.aeronaves.comunicacion.PaqueteDatosAmbiente;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
@@ -69,16 +69,14 @@ public class Juego implements ClienteListener {
     private final Timer timer;
     private long ticks;
     
-    private final Conexion conexion;
-    
     private final List<DatosExplosion> explosiones;
+    
+    private final GuerraAeronaves guerraAeronaves;
        
-    public Juego(Stage stage, int matrizMapa[][], Conexion conexion) {
+    public Juego(Stage stage, int matrizMapa[][], GuerraAeronaves guerraAeronaves) {
         this.stage = stage;
         this.matrizMapa = matrizMapa;
-        
-        this.conexion = conexion;
-        conexion.getCliente().getListeners().add(this);
+        this.guerraAeronaves = guerraAeronaves;
         
         sonidoExplosion = Gdx.audio.newSound(Gdx.files.internal("sonidos/snd_explosion.wav"));
         
@@ -103,14 +101,13 @@ public class Juego implements ClienteListener {
     }
     
     public void iniciar() {
+        guerraAeronaves.getConexion().getCliente().getListeners().clear();
+        guerraAeronaves.getConexion().getCliente().getListeners().add(this);
         timer.clear();
         timer.scheduleTask(new Task() {
             @Override
             public void run() {
                 ticks = (ticks == Long.MAX_VALUE) ? 0 : ticks + 1;
-                if (ticks % GuerraAeronaves.TICKS_SOLICITUD_DATOS_AGENTE == 0) {
-                    conexion.getCliente().solicitarDatosAgente();
-                }
                 
                 if (ticks % GuerraAeronaves.TICKS_DETECCION_TECLAS == 0) {                  
                     TeclasPresionadas tpAvionRojo = detectarTeclas(
@@ -144,25 +141,21 @@ public class Juego implements ClienteListener {
                     crearElementoAleatorio(stage);
                 }
                 
-                if (ticks % GuerraAeronaves.TICKS_ENVIO_DATOS_AMBIENTE == 0) {
-                    conexion.getServidor().enviarDatosAlAgente(new DatosAmbiente( 
-                              buscarElementosVisibles(elementos)
-                            , explosiones
-                    ));
+                if (ticks % GuerraAeronaves.TICKS_ENVIO_PAQUETE_DATOS == 0) {
+                    guerraAeronaves.getConexion().getServidor().enviarPaqueteDatos(
+                            new PaqueteDatosAmbiente(buscarElementosVisibles(elementos)
+                            , explosiones));
                     explosiones.clear();
-                }       
+                }
             }
         }, GuerraAeronaves.TIEMPO_TICK, GuerraAeronaves.TIEMPO_TICK);
     }
 
-    // Cuando recibe las decisiones del agente.
     @Override
-    public void alRecibirDatosServidor(Object datosServidor) {
-        TeclasPresionadas tpAvionAzul = ((DatosAgente)datosServidor)
-                .getTeclasPresionadas();
-        procesarTeclasPresionadas(avionAzul, tpAvionAzul);
-    }
-
+    public void alRecibirPaqueteDatos(PaqueteDatos paqueteDatos) {
+         procesarTeclasPresionadas(avionAzul, ((PaqueteDatosAgente)paqueteDatos).getTeclasPresionadas());
+    }    
+    
     // Realiza las tareas antes de terminar el juego y dispara el evento 
     // del listener correspondiente.
     private void terminar(final Avion a) {

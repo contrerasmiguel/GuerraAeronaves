@@ -18,8 +18,6 @@ public class GuerraAeronaves extends Game {
     
     private Music music_menu, music_edicion, music_juego;
     
-    private Conexion conexion;
-    
     public static final float 
               TIEMPO_TICK = 0.010f
             , VIDA_AVION = 3
@@ -59,14 +57,13 @@ public class GuerraAeronaves extends Game {
             , ID_EXPLOSION = 71
             , MUNICIONES_AVION = 30
             , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3
-            , TICKS_SOLICITUD_DATOS_AGENTE = 5
-            , TICKS_ENVIO_DATOS_AMBIENTE = 5
             , TICKS_DETECCION_TECLAS = 10
             , TICKS_DETECCION_COLISIONES = 10
             , TICKS_ACTUALIZACION_AVIONES = 400
             , TICKS_ACTUALIZACION_PROYECTILES = 10
             , TICKS_ACTUALIZACION_NUBES = 200
             , TICKS_COLOCAR_POWERUP = 500
+            , TICKS_ENVIO_PAQUETE_DATOS = 5
             , GASOLINA_AVION = (int)Math.round(60 / (TICKS_ACTUALIZACION_AVIONES * TIEMPO_TICK))
             , CANTIDAD_PICKUP_GASOLINA = GASOLINA_AVION / 3
             ;            
@@ -81,6 +78,8 @@ public class GuerraAeronaves extends Game {
        
     public static final String RUTA_CONFIGURACION_CONEXION_AMBIENTE = "config/ConexionTeclasAmbiente.txt";    
        
+    private Conexion conexion;
+    
     @Override
     public void create () {
         batch = new SpriteBatch();
@@ -89,8 +88,8 @@ public class GuerraAeronaves extends Game {
         music_edicion = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_edicion.mp3"));
         music_juego = Gdx.audio.newMusic(Gdx.files.internal("sonidos/musica_juego.mp3"));    
         
-        conexion = new Conexion(DatosConexion.crearDesdeArchivoConfiguracion(
-                GuerraAeronaves.RUTA_CONFIGURACION_CONEXION_AMBIENTE));
+        conexion = new Conexion(DatosConexion.crearDesdeArchivo(RUTA_CONFIGURACION_CONEXION_AMBIENTE));
+        conexion.abrir();
         
         setScreenMenuPrincipal();
     }
@@ -103,20 +102,16 @@ public class GuerraAeronaves extends Game {
     @Override
     public void dispose () {
         super.dispose();
+        //conexion.cerrar();
     }
 
     public void setScreenMenuPrincipal() {
         setScreen(new ScreenMenuPrincipal(this));
         setMusica(music_menu);
     }
-    
-    public void setScreenConexion() {
-        setScreen(new ScreenConexion(this, conexion));
-        setMusica(music_menu);
-    }
 
     public void setScreenJuego() {
-        setScreen(new ScreenJuego(this, conexion));
+        setScreen(new ScreenJuego(this));
         setMusica(music_juego);        
     }    
     
@@ -184,6 +179,10 @@ public class GuerraAeronaves extends Game {
     
     public static final int getNumFilasEditor() {
         return NUM_FILAS;
+    }
+
+    public Conexion getConexion() {
+        return conexion;
     }
     
 }
