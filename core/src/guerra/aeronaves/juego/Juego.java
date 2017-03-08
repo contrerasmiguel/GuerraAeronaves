@@ -23,6 +23,8 @@ import guerra.aeronaves.GuerraAeronaves;
 import guerra.aeronaves.comunicacion.ClienteListener;
 import guerra.aeronaves.comunicacion.DatosExplosion;
 import guerra.aeronaves.comunicacion.PaqueteDatos;
+import guerra.aeronaves.comunicacion.PaqueteDatosAgente;
+import guerra.aeronaves.comunicacion.PaqueteDatosAmbiente;
 import guerra.aeronaves.juego.elementos.Avion;
 import guerra.aeronaves.juego.elementos.AvionAzul;
 import guerra.aeronaves.juego.elementos.Edificio;
@@ -134,7 +136,7 @@ public class Juego implements ClienteListener {
                             , Keys.LEFT
                             , Keys.CONTROL_RIGHT);
                     procesarTeclasPresionadas(avionRojo, tpAvionRojo);
-                    pseudoInteligencia();
+                    //pseudoInteligencia();
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ACTUALIZACION_PROYECTILES == 0) {
@@ -160,9 +162,9 @@ public class Juego implements ClienteListener {
                 }
                 
                 if (ticks % GuerraAeronaves.TICKS_ENVIO_PAQUETE_DATOS == 0) {
-                    /*guerraAeronaves.getConexion().getServidor().enviarPaqueteDatos(
+                    guerraAeronaves.getConexion().getServidor().enviarPaqueteDatos(
                             new PaqueteDatosAmbiente(buscarElementosVisibles(elementos)
-                            , explosiones));*/
+                            , explosiones));
                     explosiones.clear();
                 }
             }
@@ -321,15 +323,15 @@ public class Juego implements ClienteListener {
         int segundosGasolina = (int) (avionAzul.getGasolina() * GuerraAeronaves.TICKS_ACTUALIZACION_AVIONES 
                 * GuerraAeronaves.TIEMPO_TICK);
         
-        /*if (segundosGasolina <= 10 && nodoEstacionGasolina != null) {
+        if (segundosGasolina <= 10 && nodoEstacionGasolina != null) {
             nodoObjetivo = nodoEstacionGasolina;
         }
         else if (avionAzul.getMuniciones() == 0 && nodoEstacionMuniciones != null) {
             nodoObjetivo = nodoEstacionMuniciones;
         }
-        else if (nodoJugador != null) {*/
+        else if (nodoJugador != null) {
             nodoObjetivo = nodoJugador;
-        //}
+        }
         
         // No se puede buscar un camino si no existe un origen y un destino.
         if (nodoAgente != null && nodoObjetivo != null) {
@@ -413,7 +415,7 @@ public class Juego implements ClienteListener {
     
     @Override
     public void alRecibirPaqueteDatos(PaqueteDatos paqueteDatos) {
-        //procesarTeclasPresionadas(avionAzul, ((PaqueteDatosAgente)paqueteDatos).getTeclasPresionadas());
+        procesarTeclasPresionadas(avionAzul, ((PaqueteDatosAgente)paqueteDatos).getTeclasPresionadas());
     }    
     
     // Realiza las tareas antes de terminar el juego y dispara el evento 
@@ -998,6 +1000,12 @@ public class Juego implements ClienteListener {
         }
         return null;
     }
+    
+    // Devuelve una lista con todos los elementos que serían visibles a un 
+    // agente
+    private List<Elemento> buscarElementosVisibles(List<Elemento> es) {
+        return es;
+    }    
     
     private Vector2 calcularPosicionMapa(int numFilasMapa, int numColumnasMapa
             , List<Vector2> centrosCasillas, int columna, int fila) {
