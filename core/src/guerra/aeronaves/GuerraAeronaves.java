@@ -20,7 +20,8 @@ public class GuerraAeronaves extends Game {
     
     public static final float 
               TIEMPO_TICK = 0.010f
-            , VIDA_AVION = 3
+            , TIEMPO_RECARGA_AVION = 250 // Milisegundos
+            , VIDA_AVION = 20
             , VIDA_ESTACION_MUNICION = 6
             , VIDA_ESTACION_GASOLINA = 6
             , VIDA_EDIFICIO = 9
@@ -55,7 +56,7 @@ public class GuerraAeronaves extends Game {
             , ID_ESTACION_MUNICIONES_ROJO = 69
             , ID_ESTACION_MUNICIONES_AZUL = 70
             , ID_EXPLOSION = 71
-            , MUNICIONES_AVION = 30
+            , MUNICIONES_AVION = 0
             , CANTIDAD_PICKUP_MUNICIONES = MUNICIONES_AVION / 3
             , TICKS_DETECCION_TECLAS = 10
             , TICKS_DETECCION_COLISIONES = 10

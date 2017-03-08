@@ -19,9 +19,9 @@ public class ClickListenerBotonGuardar extends ClickListener{
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
         
-        FileHandle[] ListaArchivos = Gdx.files.local("mapas").list();
+        //FileHandle[] ListaArchivos = Gdx.files.local("mapas").list();
         
-        FileHandle file = Gdx.files.local("mapas/mapa"+(ListaArchivos.length+1)+".txt");
+        FileHandle file = Gdx.files.local("mapas/mapa1.txt");
         Array<Cell> aux = mapa.getCells();
         String contenido = "";
         int n = 0;
